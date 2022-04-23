@@ -2,8 +2,7 @@
 
 #include "jnglpch.h"
 
-#include "Jungle/App.h"
-#include "Jungle/Log.h"
-#include "Jungle/Layers/Layer.h"
-
-#include "Jungle/EntryPoint.h"
+#include "Jungle/Core/App.h"
+#include "Jungle/Core/Log.h"
+#include "Jungle/Core/Layer.h"
+#include "Jungle/Core/EntryPoint.h"

@@ -2,8 +2,8 @@
 
 #include "Core.h"
 #include "Window.h"
-#include "Events/AppEvent.h"
-#include "Layers/LayerStack.h"
+#include "Jungle/Events/AppEvent.h"
+#include "LayerStack.h"
 
 namespace Jungle 
 {

@@ -1,8 +1,8 @@
 #pragma once
 
-#include <GLFW/glfw3.h>
+#include "Jungle/Core/Window.h"
 
-#include "Jungle/Window.h"
+struct GLFWwindow;
 
 namespace Jungle
 {

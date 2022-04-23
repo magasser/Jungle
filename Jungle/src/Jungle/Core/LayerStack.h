@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "Jungle/Core.h"
+#include "Core.h"
 #include "Layer.h"
 
 namespace Jungle
