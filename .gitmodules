@@ -1,0 +1,3 @@
+[submodule "Jungle/vendor/spdlog"]
+	path = Jungle/vendor/spdlog
+	url = https://github.com/gabime/spdlog.git
