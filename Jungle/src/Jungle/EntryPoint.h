@@ -8,8 +8,8 @@ int main(int argc, char** argv)
 {
 	auto three = 3;
 	Jungle::Log::Init();
-	JNGL_CORE_WARN("Core Inited");
-	JNGL_INFO("Client Inited {0}", three);
+	JNGL_CORE_LOG_WARN("Core Inited");
+	JNGL_LOG_INFO("Client Inited {0}", three);
 
 	auto app = Jungle::CreateApp();
 	app->Run();

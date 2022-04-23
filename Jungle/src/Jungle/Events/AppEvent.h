@@ -17,7 +17,7 @@ namespace Jungle
 		{
 			std::stringstream ss;
 			ss << "WindowResizeEvent: " << m_Width << ", " << m_Height;
-			ss.str();
+			return ss.str();
 		}
 
 		EVENT_CLASS_TYPE(WindowResize)
@@ -27,10 +27,10 @@ namespace Jungle
 		unsigned int m_Width, m_Height;
 	};
 
-	class JUNGLE_API WindowClosedEvent : public Event
+	class JUNGLE_API WindowCloseEvent : public Event
 	{
 	public:
-		WindowClosedEvent() { }
+		WindowCloseEvent() { }
 
 		EVENT_CLASS_TYPE(WindowClose)
 		EVENT_CLASS_CATEGORY(EventCategoryApplication)

@@ -1,14 +1,44 @@
+require('vstudio')
+premake.api.register {
+  name = "workspace_files",
+  scope = "workspace",
+  kind = "list:string",
+}
+
+premake.override(premake.vstudio.sln2005, "projects", function(base, wks)
+  if wks.workspace_files and #wks.workspace_files > 0 then
+    premake.push('Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{' .. os.uuid("Solution Items:"..wks.name) .. '}"')
+    premake.push("ProjectSection(SolutionItems) = preProject")
+    for _, file in ipairs(wks.workspace_files) do
+      file = path.rebase(file, ".", wks.location)
+      premake.w(file.." = "..file)
+    end
+    premake.pop("EndProjectSection")
+    premake.pop("EndProject")
+  end
+  base(wks)
+end)
+
 workspace "Jungle"
 	architecture "x64"
+	configurations { "Debug", "Release", "Dist" }
 
-	configurations
+	workspace_files
 	{
-		"Debug",
-		"Release",
-		"Dist"
+		".gitignore",
+		"premake5.lua",
+		"README.md"
 	}
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
+
+IncludeDir = {}
+IncludeDir["spdlog"] = "Jungle/vendor/spdlog/include"
+IncludeDir["GLFW"] = "Jungle/vendor/GLFW/include"
+IncludeDir["GLAD"] = "Jungle/vendor/GLAD/include"
+
+include "Jungle/vendor/GLFW"
+include "Jungle/vendor/GLAD"
 
 project "Jungle"
 	location "Jungle"
@@ -30,7 +60,16 @@ project "Jungle"
 	includedirs
 	{
 		"%{prj.name}/src",
-		"%{prj.name}/vendor/spdlog/include"
+		"%{IncludeDir.spdlog}",
+		"%{IncludeDir.GLFW}",
+		"%{IncludeDir.GLAD}"
+	}
+
+	links
+	{
+		"GLFW",
+		"GLAD",
+		"opengl32.lib"
 	}
 
 	filter "system:windows"
@@ -41,7 +80,8 @@ project "Jungle"
 		defines
 		{
 			"JNGL_PLATFORM_WINDOWS",
-			"JNGL_BUILD_DLL"
+			"JNGL_BUILD_DLL",
+			"GLFW_INCLUDE_NONE"
 		}
 
 		postbuildcommands
@@ -51,14 +91,22 @@ project "Jungle"
 
 	filter "configurations:Debug"
 		defines "JNGL_CFG_DEBUG"
+		buildoptions "/MDd"
 		symbols "On"
+
+		defines
+		{
+			"JNGL_ENABLE_ASSERTS"
+		}
 
 	filter "configurations:Release"
 		defines "JNGL_CFG_RELEASE"
+		buildoptions "/MD"
 		optimize "On"
 
 	filter "configurations:Dist"
 		defines "JNGL_CFG_DIST"
+		buildoptions "/MD"
 		optimize "On"
 
 project "Sandbox"
@@ -98,12 +146,15 @@ project "Sandbox"
 
 	filter "configurations:Debug"
 		defines "JNGL_CFG_DEBUG"
+		buildoptions "/MDd"
 		symbols "On"
 
 	filter "configurations:Release"
 		defines "JNGL_CFG_RELEASE"
+		buildoptions "/MD"
 		optimize "On"
 
 	filter "configurations:Dist"
 		defines "JNGL_CFG_DIST"
+		buildoptions "/MD"
 		optimize "On"

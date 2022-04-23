@@ -10,7 +10,7 @@ namespace Jungle
 		MouseMovedEvent(float x, float y)
 			: m_MouseX(x), m_MouseY(y) { }
 
-		inline flaot GetX() const { return m_MouseX; }
+		inline float GetX() const { return m_MouseX; }
 		inline float GetY() const { return m_MouseY; }
 
 		std::string ToString() const override
@@ -38,7 +38,7 @@ namespace Jungle
 		std::string ToString() const override
 		{
 			std::stringstream ss;
-			ss << "MouseScrolledEvent: " << m_XOffset << ", " m_YOffset;
+			ss << "MouseScrolledEvent: " << m_XOffset << ", " << m_YOffset;
 			return ss.str();
 		}
 
@@ -46,7 +46,7 @@ namespace Jungle
 		EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
 
 	private:
-		flaot m_XOffset, m_YOffset;
+		float m_XOffset, m_YOffset;
 	};
 
 	class JUNGLE_API MouseButtonEvent : public Event
@@ -57,7 +57,7 @@ namespace Jungle
 		EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
 
 	protected:
-		MoustButtonEvent(int button)
+		MouseButtonEvent(int button)
 			: m_Button(button) { }
 
 		int m_Button;
@@ -79,9 +79,10 @@ namespace Jungle
 		EVENT_CLASS_TYPE(MouseButtonPressed)
 	};
 
-	class JUNGLE_API MouseButtonReleased : public MouseButtonEvent
+	class JUNGLE_API MouseButtonReleasedEvent : public MouseButtonEvent
 	{
-		public MouseButtonPressedEvent(int button)
+	public: 
+		MouseButtonReleasedEvent(int button)
 			: MouseButtonEvent(button) { }
 
 		std::string ToString() const override

@@ -7,7 +7,7 @@ namespace Jungle
 	enum class EventType
 	{
 		None = 0,
-		WindowClose, WindowRezise, WindowFocus, WindowLostFocus, WindowMoved,
+		WindowClose, WindowResize, WindowFocus, WindowLostFocus, WindowMoved,
 		AppTick, AppUpdate, AppRender,
 		KeyPressed, KeyReleased,
 		MouseButtonPressed, MouseButtonReleased, MouseMoved, MouseScrolled
@@ -27,7 +27,7 @@ namespace Jungle
 								virtual EventType GetEventType() const override { return GetStaticType(); }\
 								virtual const char* GetName() const override { return #type; }
 
-#define EVENT_CLASS_CATEGORY virtual int GetCategoryFlags() const override { return category; }
+#define EVENT_CLASS_CATEGORY(category) virtual int GetCategoryFlags() const override { return category; }
 
 	class JUNGLE_API Event
 	{
@@ -43,6 +43,8 @@ namespace Jungle
 		{
 			return GetCategoryFlags() & category;
 		}
+
+		bool Handled = false;
 
 	protected:
 		bool m_Handled = false;

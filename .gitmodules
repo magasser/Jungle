@@ -1,3 +1,6 @@
 [submodule "Jungle/vendor/spdlog"]
 	path = Jungle/vendor/spdlog
 	url = https://github.com/gabime/spdlog.git
+[submodule "Jungle/vendor/GLFW"]
+	path = Jungle/vendor/GLFW
+	url = https://github.com/magasser/glfw.git
