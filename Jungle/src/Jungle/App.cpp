@@ -1,3 +1,4 @@
+#include "jnglpch.h"
 #include "App.h"
 
 namespace Jungle
@@ -15,4 +16,3 @@ namespace Jungle
 		while (true);
 	}
 }
-

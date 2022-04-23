@@ -18,6 +18,9 @@ project "Jungle"
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
+	pchheader "jnglpch.h"
+	pchsource "Jungle/src/jnglpch.cpp"
+
 	files
 	{
 		"%{prj.name}/src/**.h",
@@ -26,6 +29,7 @@ project "Jungle"
 
 	includedirs
 	{
+		"%{prj.name}/src",
 		"%{prj.name}/vendor/spdlog/include"
 	}
 
@@ -46,15 +50,15 @@ project "Jungle"
 		}
 
 	filter "configurations:Debug"
-		defines "JNGL_DEBUG"
+		defines "JNGL_CFG_DEBUG"
 		symbols "On"
 
 	filter "configurations:Release"
-		defines "JNGL_RELEASE"
+		defines "JNGL_CFG_RELEASE"
 		optimize "On"
 
 	filter "configurations:Dist"
-		defines "JNGL_DIST"
+		defines "JNGL_CFG_DIST"
 		optimize "On"
 
 project "Sandbox"
@@ -73,8 +77,8 @@ project "Sandbox"
 
 	includedirs
 	{
-		"%{prj.name}/vendor/spdlog/include",
-		"Jungle/src"
+		"Jungle/src",
+		"Jungle/vendor/spdlog/include"
 	}
 
 	links
@@ -93,13 +97,13 @@ project "Sandbox"
 		}
 
 	filter "configurations:Debug"
-		defines "JNGL_DEBUG"
+		defines "JNGL_CFG_DEBUG"
 		symbols "On"
 
 	filter "configurations:Release"
-		defines "JNGL_RELEASE"
+		defines "JNGL_CFG_RELEASE"
 		optimize "On"
 
 	filter "configurations:Dist"
-		defines "JNGL_DIST"
+		defines "JNGL_CFG_DIST"
 		optimize "On"
