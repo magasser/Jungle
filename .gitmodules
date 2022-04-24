@@ -4,3 +4,9 @@
 [submodule "Jungle/vendor/GLFW"]
 	path = Jungle/vendor/GLFW
 	url = https://github.com/magasser/glfw.git
+[submodule "Jungle/vendor/ImGui"]
+	path = Jungle/vendor/ImGui
+	url = https://github.com/magasser/imgui.git
+[submodule "Jungle/vendor/GLM"]
+	path = Jungle/vendor/GLM
+	url = https://github.com/g-truc/glm.git
