@@ -5,7 +5,7 @@ class Sandbox : public Jungle::App
 public:
 	Sandbox()
 	{
-
+		PushOverlay(new Jungle::ImGuiLayer());
 	}
 
 	~Sandbox()

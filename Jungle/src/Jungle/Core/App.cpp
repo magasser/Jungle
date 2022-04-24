@@ -1,15 +1,23 @@
 #include "jnglpch.h"
 #include "App.h"
+
+#include <glad/glad.h>
+
 #include "Log.h"
+#include "Input.h"
 
 namespace Jungle
 {
-#define BIND_EVENT_FN(x) std::bind(&x, this, std::placeholders::_1)
+	App* App::s_Instance = nullptr;
 
 	App::App()
 	{
+		JNGL_CORE_ASSERT(!s_Instance, "App already exists.");
+
+		s_Instance = this;
+
 		m_Window = std::unique_ptr<Window>(Window::Create());
-		m_Window->SetEventCallback(BIND_EVENT_FN(App::OnEvent));
+		m_Window->SetEventCallback(JNGL_BIND_EVENT_FN(App::OnEvent));
 	}
 
 	App::~App()
@@ -19,9 +27,10 @@ namespace Jungle
 	void App::OnEvent(Event& e)
 	{
 		EventDispatcher dispatcher(e);
-		dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(App::OnWindowClose));
+		dispatcher.Dispatch<WindowCloseEvent>(JNGL_BIND_EVENT_FN(App::OnWindowClose));
 
-		JNGL_CORE_LOG_TRACE("{0}", e);
+		auto [x, y] = Input::GetMousePosition();
+		JNGL_CORE_LOG_TRACE("{0}, {1}", x, y);
 
 		for (auto it = m_LayerStack.end(); it != m_LayerStack.begin(); )
 		{
@@ -37,6 +46,9 @@ namespace Jungle
 	{
 		while (m_Running)
 		{
+			glClearColor(0, 1, 0, 1);
+			glClear(GL_COLOR_BUFFER_BIT);
+
 			for (Layer* layer : m_LayerStack)
 			{
 				layer->OnUpdate();
