@@ -29,6 +29,7 @@ namespace Jungle
 
 	private:
 		GLFWwindow* m_Window;
+		GraphicsContext* m_Context;
 
 		struct WindowData
 		{

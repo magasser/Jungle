@@ -44,6 +44,7 @@ namespace Jungle
 			return GetCategoryFlags() & category;
 		}
 
+	public:
 		bool Handled = false;
 
 	protected:

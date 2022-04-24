@@ -2,7 +2,7 @@
 
 #ifdef JNGL_PLATFORM_WINDOWS
 	#ifdef JNGL_BUILD_DLL
-		#define JUNGLE_API __declspec(dllexport)	
+		#define JUNGLE_API __declspec(dllexport)
 	#else 
 		#define JUNGLE_API __declspec(dllimport)
 	#endif

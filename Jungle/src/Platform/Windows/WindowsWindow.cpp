@@ -1,12 +1,13 @@
 #include "jnglpch.h"
 
-#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 #include "Jungle/Core/Log.h"
 #include "Jungle/Events/AppEvent.h"
 #include "Jungle/Events/MouseEvent.h"
 #include "Jungle/Events/KeyEvent.h"
+
+#include "Platform/OpenGL/OpenGLContext.h"
 
 #include "WindowsWindow.h"
 
@@ -53,10 +54,9 @@ namespace Jungle
 		}
 
 		m_Window = glfwCreateWindow((int)m_Data.Width, (int)m_Data.Height, m_Data.Title.c_str(), nullptr, nullptr);
-		glfwMakeContextCurrent(m_Window);
 
-		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-		JNGL_CORE_ASSERT(status, "Failed to initialize GLAD.");
+		m_Context = new OpenGLContext(m_Window);
+		m_Context->Init();
 
 		glfwSetWindowUserPointer(m_Window, &m_Data);
 		SetVSync(true);
@@ -165,6 +165,7 @@ namespace Jungle
 	void WindowsWindow::OnUpdate()
 	{
 		glfwPollEvents();
+		m_Context->SwapBuffers();
 		glfwSwapBuffers(m_Window);
 	}
 

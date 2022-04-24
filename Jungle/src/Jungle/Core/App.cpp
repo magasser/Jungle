@@ -18,6 +18,9 @@ namespace Jungle
 
 		m_Window = std::unique_ptr<Window>(Window::Create());
 		m_Window->SetEventCallback(JNGL_BIND_EVENT_FN(App::OnEvent));
+
+		m_ImGuiLayer = new ImGuiLayer();
+		PushOverlay(m_ImGuiLayer);
 	}
 
 	App::~App()
@@ -30,7 +33,6 @@ namespace Jungle
 		dispatcher.Dispatch<WindowCloseEvent>(JNGL_BIND_EVENT_FN(App::OnWindowClose));
 
 		auto [x, y] = Input::GetMousePosition();
-		JNGL_CORE_LOG_TRACE("{0}, {1}", x, y);
 
 		for (auto it = m_LayerStack.end(); it != m_LayerStack.begin(); )
 		{
@@ -46,6 +48,7 @@ namespace Jungle
 	{
 		while (m_Running)
 		{
+			//glClearColor(0.1f, 0.7f, 0.5f, 1);
 			glClearColor(0, 1, 0, 1);
 			glClear(GL_COLOR_BUFFER_BIT);
 
@@ -53,6 +56,13 @@ namespace Jungle
 			{
 				layer->OnUpdate();
 			}
+
+			m_ImGuiLayer->Begin();
+			for (Layer* layer : m_LayerStack)
+			{
+				layer->OnImGuiRender();
+			}
+			m_ImGuiLayer->End();
 
 			m_Window->OnUpdate();
 		}

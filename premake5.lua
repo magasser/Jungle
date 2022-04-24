@@ -1,23 +1,4 @@
-require('vstudio')
-premake.api.register {
-  name = "workspace_files",
-  scope = "workspace",
-  kind = "list:string",
-}
-
-premake.override(premake.vstudio.sln2005, "projects", function(base, wks)
-  if wks.workspace_files and #wks.workspace_files > 0 then
-    premake.push('Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{' .. os.uuid("Solution Items:"..wks.name) .. '}"')
-    premake.push("ProjectSection(SolutionItems) = preProject")
-    for _, file in ipairs(wks.workspace_files) do
-      file = path.rebase(file, ".", wks.location)
-      premake.w(file.." = "..file)
-    end
-    premake.pop("EndProjectSection")
-    premake.pop("EndProject")
-  end
-  base(wks)
-end)
+include "premake/solution_items.lua"
 
 workspace "Jungle"
 	architecture "x64"
@@ -36,6 +17,7 @@ IncludeDir = {}
 IncludeDir["spdlog"] = "Jungle/vendor/spdlog/include"
 IncludeDir["GLFW"] = "Jungle/vendor/GLFW/include"
 IncludeDir["GLAD"] = "Jungle/vendor/GLAD/include"
+IncludeDir["GLM"] = "Jungle/vendor/GLM/include"
 IncludeDir["ImGui"] = "Jungle/vendor/ImGui"
 
 include "Jungle/vendor/GLFW"
@@ -46,6 +28,7 @@ project "Jungle"
 	location "Jungle"
 	kind "SharedLib"
 	language "C++"
+	cppdialect "C++20"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
@@ -56,7 +39,10 @@ project "Jungle"
 	files
 	{
 		"%{prj.name}/src/**.h",
-		"%{prj.name}/src/**.cpp"
+		"%{prj.name}/src/**.cpp",
+		
+		"%{prj.name}/vendor/GLM/glm/**.hpp",
+		"%{prj.name}/vendor/GLM/glm/**.inl"
 	}
 
 	includedirs
@@ -65,7 +51,13 @@ project "Jungle"
 		"%{IncludeDir.spdlog}",
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.GLAD}",
+		"%{IncludeDir.GLM}",
 		"%{IncludeDir.ImGui}"
+	}
+
+	defines
+	{
+		"_CRT_SECURE_NO_WARNIGNS"
 	}
 
 	links
@@ -77,8 +69,7 @@ project "Jungle"
 	}
 
 	filter "system:windows"
-		cppdialect "C++20"
-		staticruntime "On"
+		staticruntime "on"
 		systemversion "latest"
 
 		defines
@@ -96,7 +87,7 @@ project "Jungle"
 	filter "configurations:Debug"
 		defines "JNGL_CFG_DEBUG"
 		buildoptions "/MDd"
-		symbols "On"
+		symbols "on"
 
 		defines
 		{
@@ -106,12 +97,12 @@ project "Jungle"
 	filter "configurations:Release"
 		defines "JNGL_CFG_RELEASE"
 		buildoptions "/MD"
-		optimize "On"
+		optimize "on"
 
 	filter "configurations:Dist"
 		defines "JNGL_CFG_DIST"
 		buildoptions "/MD"
-		optimize "On"
+		optimize "on"
 
 project "Sandbox"
 	location "Sandbox"
@@ -130,7 +121,8 @@ project "Sandbox"
 	includedirs
 	{
 		"Jungle/src",
-		"Jungle/vendor/spdlog/include"
+		"%{IncludeDir.spdlog}",
+		"%{IncludeDir.ImGui}"
 	}
 
 	links
@@ -140,25 +132,26 @@ project "Sandbox"
 
 	filter "system:windows"
 		cppdialect "C++20"
-		staticruntime "On"
+		staticruntime "on"
 		systemversion "latest"
 
 		defines
 		{
-			"JNGL_PLATFORM_WINDOWS"
+			"JNGL_PLATFORM_WINDOWS",
+			"IMGUI_API=__declspec(dllimport)"
 		}
 
 	filter "configurations:Debug"
 		defines "JNGL_CFG_DEBUG"
 		buildoptions "/MDd"
-		symbols "On"
+		symbols "on"
 
 	filter "configurations:Release"
 		defines "JNGL_CFG_RELEASE"
 		buildoptions "/MD"
-		optimize "On"
+		optimize "on"
 
 	filter "configurations:Dist"
 		defines "JNGL_CFG_DIST"
 		buildoptions "/MD"
-		optimize "On"
+		optimize "on"
