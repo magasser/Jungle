@@ -166,7 +166,6 @@ namespace Jungle
 	{
 		glfwPollEvents();
 		m_Context->SwapBuffers();
-		glfwSwapBuffers(m_Window);
 	}
 
 	void WindowsWindow::SetVSync(bool enabled)

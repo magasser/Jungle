@@ -5,10 +5,12 @@
 #include "LayerStack.h"
 #include "Jungle/Events/AppEvent.h"
 #include "Jungle/ImGui/ImGuiLayer.h"
+#include "Jungle/Rendering/Shader.h"
+#include "Jungle/Rendering/Buffer.h"
+#include "Jungle/Rendering/VertexArray.h"
 
 namespace Jungle 
 {
-
 	class JUNGLE_API App
 	{
 	public:
@@ -33,6 +35,12 @@ namespace Jungle
 		ImGuiLayer* m_ImGuiLayer;
 		bool m_Running = true;
 		LayerStack m_LayerStack;
+
+		std::shared_ptr<Shader> m_Shader;
+		std::shared_ptr<VertexArray> m_VertexArray;
+
+		std::shared_ptr<Shader> m_SquareShader;
+		std::shared_ptr<VertexArray> m_SquareVA;
 
 	private:
 		static App* s_Instance;

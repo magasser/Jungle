@@ -1,7 +1,5 @@
 #pragma once
 
-#include "jnglpch.h"
-
 #include "Core.h"
 #include "Jungle/Events/Event.h"
 
