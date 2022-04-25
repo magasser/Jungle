@@ -10,9 +10,11 @@ namespace Jungle
 	{
 		switch (Renderer::GetAPI())
 		{
-		case RendererAPI::None:		JNGL_CORE_ASSERT(false, "RendererAPI::None is not supported."); return nullptr;
-		case RendererAPI::OpenGL:	return new OpenGLVertexArray();
-		default:					JNGL_CORE_ASSERT(false, "Unknown renderer API."); return nullptr;
+		case RendererAPI::API::None:	JNGL_CORE_ASSERT(false, "RendererAPI::None is not supported."); return nullptr;
+		case RendererAPI::API::OpenGL:	return new OpenGLVertexArray();
 		}
+
+		JNGL_CORE_ASSERT(false, "Unknown renderer API.");
+		return nullptr;
 	}
 }

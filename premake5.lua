@@ -17,7 +17,7 @@ IncludeDir = {}
 IncludeDir["spdlog"] = "Jungle/vendor/spdlog/include"
 IncludeDir["GLFW"] = "Jungle/vendor/GLFW/include"
 IncludeDir["GLAD"] = "Jungle/vendor/GLAD/include"
-IncludeDir["GLM"] = "Jungle/vendor/GLM/include"
+IncludeDir["GLM"] = "Jungle/vendor/GLM"
 IncludeDir["ImGui"] = "Jungle/vendor/ImGui"
 
 include "Jungle/vendor/GLFW"
@@ -41,8 +41,8 @@ project "Jungle"
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.cpp",
 		
-		"%{prj.name}/vendor/GLM/glm/**.hpp",
-		"%{prj.name}/vendor/GLM/glm/**.inl"
+		"%{IncludeDir.GLM}/glm/**.hpp",
+		"%{IncludeDir.GLM}/glm/**.inl"
 	}
 
 	includedirs

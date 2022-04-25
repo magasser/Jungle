@@ -5,6 +5,7 @@
 
 #include "Log.h"
 #include "Input.h"
+#include "Jungle/Rendering/Renderer.h"
 
 namespace Jungle
 {
@@ -154,17 +155,6 @@ namespace Jungle
 	{
 		while (m_Running)
 		{
-			glClearColor(0.2f, 0.2f, 0.2f, 1);
-			glClear(GL_COLOR_BUFFER_BIT);
-
-			m_SquareShader->Bind();
-			m_SquareVA->Bind();
-			glDrawElements(GL_TRIANGLES, m_SquareVA->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
-
-			m_Shader->Bind();
-			m_VertexArray->Bind();
-			glDrawElements(GL_TRIANGLES, m_VertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
-
 			for (Layer* layer : m_LayerStack)
 			{
 				layer->OnUpdate();

@@ -12,8 +12,8 @@ namespace Jungle
 	{
 		switch (Renderer::GetAPI())
 		{
-			case RendererAPI::None:		JNGL_CORE_ASSERT(false, "RendererAPI::None is not supported."); return nullptr;
-			case RendererAPI::OpenGL:	return new OpenGLVertexBuffer(vertices, size);
+		case RendererAPI::API::None:	JNGL_CORE_ASSERT(false, "RendererAPI::None is not supported."); return nullptr;
+		case RendererAPI::API::OpenGL:	return new OpenGLVertexBuffer(vertices, size);
 		}
 
 		JNGL_CORE_ASSERT(false, "Unknown renderer API.");
@@ -24,8 +24,8 @@ namespace Jungle
 	{
 		switch (Renderer::GetAPI())
 		{
-			case RendererAPI::None:		JNGL_CORE_ASSERT(false, "RendererAPI::None is not supported."); return nullptr;
-			case RendererAPI::OpenGL:	return new OpenGLIndexBuffer(vertices, size);
+		case RendererAPI::API::None:	JNGL_CORE_ASSERT(false, "RendererAPI::None is not supported."); return nullptr;
+		case RendererAPI::API::OpenGL:	return new OpenGLIndexBuffer(vertices, size);
 		}
 		
 		JNGL_CORE_ASSERT(false, "Unknown renderer API.");
