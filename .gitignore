@@ -31,6 +31,9 @@
 *.out
 *.app
 
+# Premake
+!vendor/premake/premake5.exe
+
 # Build files
 bin/
 bin-int/
