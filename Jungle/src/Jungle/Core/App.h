@@ -5,9 +5,6 @@
 #include "LayerStack.h"
 #include "Jungle/Events/AppEvent.h"
 #include "Jungle/ImGui/ImGuiLayer.h"
-#include "Jungle/Rendering/Shader.h"
-#include "Jungle/Rendering/Buffer.h"
-#include "Jungle/Rendering/VertexArray.h"
 
 namespace Jungle 
 {

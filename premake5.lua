@@ -14,11 +14,11 @@ workspace "Jungle"
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 IncludeDir = {}
-IncludeDir["spdlog"] = "Jungle/vendor/spdlog/include"
-IncludeDir["GLFW"] = "Jungle/vendor/GLFW/include"
-IncludeDir["GLAD"] = "Jungle/vendor/GLAD/include"
-IncludeDir["GLM"] = "Jungle/vendor/GLM"
-IncludeDir["ImGui"] = "Jungle/vendor/ImGui"
+IncludeDir["spdlog"] =	"Jungle/vendor/spdlog/include"
+IncludeDir["GLFW"] =	"Jungle/vendor/GLFW/include"
+IncludeDir["GLAD"] =	"Jungle/vendor/GLAD/include"
+IncludeDir["GLM"] =		"Jungle/vendor/GLM"
+IncludeDir["ImGui"] =	"Jungle/vendor/ImGui"
 
 include "Jungle/vendor/GLFW"
 include "Jungle/vendor/GLAD"
@@ -40,9 +40,9 @@ project "Jungle"
 	{
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.cpp",
-		
-		"%{IncludeDir.GLM}/glm/**.hpp",
-		"%{IncludeDir.GLM}/glm/**.inl"
+
+		"%{prj.name}/vendor/GLM/glm/**.hpp",
+		"%{prj.name}/vendor/GLM/glm/**.inl"
 	}
 
 	includedirs
