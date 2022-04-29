@@ -1,7 +1,6 @@
 #pragma once
 
-#include "Jungle/Core/Core.h"
-#include "Jungle/Core/Log.h"
+#include "Jungle/Core/Verification.h"
 
 namespace Jungle
 {

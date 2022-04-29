@@ -3,9 +3,8 @@
 
 #include <glad/glad.h>
 
-#include "Log.h"
+#include "Verification.h"
 #include "Input.h"
-#include "Jungle/Rendering/Renderer.h"
 
 namespace Jungle
 {
@@ -28,6 +27,30 @@ namespace Jungle
 	{
 	}
 
+	void App::Run()
+	{
+		while (m_Running)
+		{
+			float time = Timestep::GetTime();
+			Timestep timestep = time - m_LastFrameTime;
+			m_LastFrameTime = time;
+
+			for (Layer* layer : m_LayerStack)
+			{
+				layer->OnUpdate(timestep);
+			}
+
+			m_ImGuiLayer->Begin();
+			for (Layer* layer : m_LayerStack)
+			{
+				layer->OnImGuiRender();
+			}
+			m_ImGuiLayer->End();
+
+			m_Window->OnUpdate();
+		}
+	}
+
 	void App::OnEvent(Event& e)
 	{
 		EventDispatcher dispatcher(e);
@@ -42,26 +65,6 @@ namespace Jungle
 			{
 				break;
 			}
-		}
-	}
-
-	void App::Run()
-	{
-		while (m_Running)
-		{
-			for (Layer* layer : m_LayerStack)
-			{
-				layer->OnUpdate();
-			}
-
-			m_ImGuiLayer->Begin();
-			for (Layer* layer : m_LayerStack)
-			{
-				layer->OnImGuiRender();
-			}
-			m_ImGuiLayer->End();
-
-			m_Window->OnUpdate();
 		}
 	}
 

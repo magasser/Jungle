@@ -3,6 +3,8 @@
 #include "Core.h"
 #include "Window.h"
 #include "LayerStack.h"
+#include "Timestep.h"
+
 #include "Jungle/Events/AppEvent.h"
 #include "Jungle/ImGui/ImGuiLayer.h"
 
@@ -28,12 +30,13 @@ namespace Jungle
 	private:
 		bool OnWindowClose(WindowCloseEvent& e);
 
+	private:
 		std::unique_ptr<Window> m_Window;
 		ImGuiLayer* m_ImGuiLayer;
 		bool m_Running = true;
 		LayerStack m_LayerStack;
+		float m_LastFrameTime = 0.0f;
 
-	private:
 		static App* s_Instance;
 	};
 

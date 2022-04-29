@@ -2,7 +2,7 @@
 
 #include <GLFW/glfw3.h>
 
-#include "Jungle/Core/Log.h"
+#include "Jungle/Core/Verification.h"
 #include "Jungle/Events/AppEvent.h"
 #include "Jungle/Events/MouseEvent.h"
 #include "Jungle/Events/KeyEvent.h"

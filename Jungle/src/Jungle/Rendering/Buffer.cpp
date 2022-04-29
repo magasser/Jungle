@@ -2,7 +2,7 @@
 
 #include "Buffer.h"
 #include "Renderer.h"
-#include "Jungle/Core/Log.h"
+#include "Jungle/Core/Verification.h"
 
 #include "Platform/OpenGL/OpenGLBuffer.h"
 

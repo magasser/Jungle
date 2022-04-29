@@ -1,8 +1,9 @@
 #include "jnglpch.h"
 
 #include <glad/glad.h>
+#include <glm/gtc/type_ptr.hpp>
 
-#include "Jungle/Core/Log.h"
+#include "Jungle/Core/Verification.h"
 
 #include "Shader.h"
 
@@ -129,4 +130,12 @@ namespace Jungle
 		glUseProgram(0);
 	}
 
+	void Shader::UploadUniformMat4(const std::string& name, const glm::mat4& matrix)
+	{
+		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+
+		JNGL_CORE_ASSERT(location >= 0, "Failed to get uniform location.");
+
+		glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
+	}
 }

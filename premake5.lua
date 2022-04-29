@@ -39,10 +39,7 @@ project "Jungle"
 	files
 	{
 		"%{prj.name}/src/**.h",
-		"%{prj.name}/src/**.cpp",
-
-		"%{prj.name}/vendor/GLM/glm/**.hpp",
-		"%{prj.name}/vendor/GLM/glm/**.inl"
+		"%{prj.name}/src/**.cpp"
 	}
 
 	includedirs
@@ -122,6 +119,7 @@ project "Sandbox"
 	{
 		"Jungle/src",
 		"%{IncludeDir.spdlog}",
+		"%{IncludeDir.GLM}",
 		"%{IncludeDir.ImGui}"
 	}
 

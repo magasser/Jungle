@@ -3,9 +3,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "Jungle/Core/Core.h"
-#include "Jungle/Core/Log.h"
-
+#include "Jungle/Core/Verification.h"
 
 #include "OpenGLContext.h"
 

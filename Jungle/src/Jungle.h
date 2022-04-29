@@ -8,6 +8,7 @@
 #include "Jungle/Core/Window.h"
 #include "Jungle/Core/LayerStack.h"
 #include "Jungle/Core/EntryPoint.h"
+#include "Jungle/Core/Timestep.h"
 
 #include "Jungle/Core/Input.h"
 #include "Jungle/Core/KeyCodes.h"

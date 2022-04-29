@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core.h"
+#include "Timestep.h"
 #include "Jungle/Events/Event.h"
 
 namespace Jungle
@@ -13,7 +14,7 @@ namespace Jungle
 
 		virtual void OnAttach() { }
 		virtual void OnDetach() { }
-		virtual void OnUpdate() { }
+		virtual void OnUpdate(Timestep timestep) { }
 		virtual void OnImGuiRender() { }
 		virtual void OnEvent(Event& e) { }
 
