@@ -25,6 +25,7 @@
 #include "Jungle/Rendering/RenderCommand.h"
 #include "Jungle/Rendering/RendererAPI.h"
 #include "Jungle/Rendering/Shader.h"
+#include "Jungle/Rendering/Texture.h"
 #include "Jungle/Rendering/VertexArray.h"
 #include "Jungle/Rendering/Camera.h"
 

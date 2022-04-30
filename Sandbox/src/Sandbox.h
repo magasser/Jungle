@@ -26,16 +26,15 @@ namespace Sandbox
 		bool OnKeyPressedEvent(Jungle::KeyPressedEvent& e);
 
 	private:
-		std::shared_ptr<Jungle::Shader> m_Shader;
-		std::shared_ptr<Jungle::VertexArray> m_VertexArray;
+		Jungle::ShaderRef m_Shader;
+		Jungle::VertexArrayRef m_VertexArray;
 
-		std::shared_ptr<Jungle::Shader> m_SquareShader;
-		std::shared_ptr<Jungle::VertexArray> m_SquareVA;
+		Jungle::ShaderRef m_SquareShader, m_TexShader;
+		Jungle::VertexArrayRef m_SquareVA;
 
 		Jungle::OrthographicCamera m_Camera;
-		float m_CameraSpeed = 0.05f;
+		float m_CameraSpeed = 0.1f;
 
-		glm::vec3 m_SquarePosition;
-		float m_SquareSpeed = 3.0f;
+		glm::vec3 m_SquareColor = { 0.2f, 0.8f, 0.3f };
 	};
 }

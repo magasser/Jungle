@@ -125,7 +125,7 @@ namespace Jungle
 		virtual const BufferLayout& GetLayout() const = 0;
 		virtual void SetLayout(const BufferLayout& layout) = 0;
 
-		static VertexBuffer* Create(float* vertices, uint32_t size);
+		static VertexBufferRef Create(float* vertices, uint32_t size);
 	};
 
 	class JUNGLE_API IndexBuffer
@@ -138,6 +138,9 @@ namespace Jungle
 
 		virtual uint32_t GetCount() const = 0;
 
-		static IndexBuffer* Create(uint32_t* indices, uint32_t size);
+		static IndexBufferRef Create(uint32_t* indices, uint32_t size);
 	};
+
+	using VertexBufferRef = Ref<VertexBuffer>;
+	using IndexBufferRef = Ref<IndexBuffer>;
 }

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #include "Jungle/Core/Core.h"
 #include "Buffer.h"
 
@@ -13,12 +15,14 @@ namespace Jungle
 		virtual void Bind() const = 0;
 		virtual void Unbind() const = 0;
 
-		virtual void AddVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer) = 0;
-		virtual void SetIndexBuffer(const std::shared_ptr<IndexBuffer>& indexBuffer) = 0;
+		virtual void AddVertexBuffer(const VertexBufferRef& vertexBuffer) = 0;
+		virtual void SetIndexBuffer(const IndexBufferRef& indexBuffer) = 0;
 
-		virtual const std::vector<std::shared_ptr<VertexBuffer>>& GetVertexBuffers() const = 0;
-		virtual const std::shared_ptr<IndexBuffer>& GetIndexBuffer() const = 0;
+		virtual const std::vector<VertexBufferRef>& GetVertexBuffers() const = 0;
+		virtual const IndexBufferRef& GetIndexBuffer() const = 0;
 
-		static VertexArray* Create();
+		static VertexArrayRef Create();
 	};
+
+	using VertexArrayRef = Ref<VertexArray>;
 }

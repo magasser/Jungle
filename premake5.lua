@@ -19,6 +19,7 @@ IncludeDir["GLFW"] =	"Jungle/vendor/GLFW/include"
 IncludeDir["GLAD"] =	"Jungle/vendor/GLAD/include"
 IncludeDir["GLM"] =		"Jungle/vendor/GLM"
 IncludeDir["ImGui"] =	"Jungle/vendor/ImGui"
+IncludeDir["stb"] =		"Jungle/vendor/stb"
 
 include "Jungle/vendor/GLFW"
 include "Jungle/vendor/GLAD"
@@ -39,7 +40,13 @@ project "Jungle"
 	files
 	{
 		"%{prj.name}/src/**.h",
-		"%{prj.name}/src/**.cpp"
+		"%{prj.name}/src/**.cpp",
+
+		"%{prj.name}/vendor/stb/**.h",
+		"%{prj.name}/vendor/stb/**.cpp",
+
+		"%{prj.name}/vendor/GLM/glm/**.hpp",
+		"%{prj.name}/vendor/GLM/glm/**.inl",
 	}
 
 	includedirs
@@ -49,7 +56,8 @@ project "Jungle"
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.GLAD}",
 		"%{IncludeDir.GLM}",
-		"%{IncludeDir.ImGui}"
+		"%{IncludeDir.ImGui}",
+		"%{IncludeDir.stb}"
 	}
 
 	defines

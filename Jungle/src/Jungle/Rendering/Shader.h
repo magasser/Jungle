@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../GLM/glm/glm.hpp"
+#include <string>
 
 #include "Jungle/Core/Core.h"
 
@@ -9,15 +9,13 @@ namespace Jungle
 	class JUNGLE_API Shader
 	{
 	public:
-		Shader(const std::string& vertexSrc, const std::string& fragmentSrc);
-		virtual ~Shader();
+		virtual ~Shader() = default;
 
-		void Bind() const;
-		void Unbind() const;
+		virtual void Bind() const = 0;
+		virtual void Unbind() const = 0;
 
-		void UploadUniformMat4(const std::string& name, const glm::mat4& matrix);
-
-	private:
-		uint32_t m_RendererID;
+		static ShaderRef Create(const std::string& vertexSrc, const std::string& fragmentSrc);
 	};
+
+	using ShaderRef = Ref<Shader>;
 }

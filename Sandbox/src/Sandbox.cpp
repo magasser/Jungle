@@ -1,7 +1,10 @@
 #include "Sandbox.h"
 
+#include "Platform/OpenGL/OpenGLShader.h"
+
 #include <imgui.h>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 Jungle::App* Jungle::CreateApp()
 {
@@ -17,8 +20,7 @@ namespace Sandbox
 	
 	ExampleLayer::ExampleLayer()
 		: Layer("ExampleLayer"),
-		m_Camera(-1.6f, 1.6f, -0.9f, 0.9f),
-		m_SquarePosition(0.0f)
+		m_Camera(-1.6f, 1.6f, -0.9f, 0.9f)
 	{
 		m_VertexArray.reset(Jungle::VertexArray::Create());
 
@@ -28,7 +30,7 @@ namespace Sandbox
 			 0.0f,  0.5f, 0.0f, 0.0f, 0.5f, 0.0f, 1.0f
 		};
 
-		std::shared_ptr<Jungle::VertexBuffer> vertexBuffer;
+		Jungle::VertexBufferRef vertexBuffer;
 		vertexBuffer.reset(Jungle::VertexBuffer::Create(vertices, sizeof(vertices)));
 		Jungle::BufferLayout layout = {
 			{ Jungle::ShaderDataType::Float3, "a_Position" },
@@ -39,30 +41,31 @@ namespace Sandbox
 		m_VertexArray->AddVertexBuffer(vertexBuffer);
 
 		uint32_t indices[3] = { 0, 1, 2 };
-		std::shared_ptr<Jungle::IndexBuffer> indexBuffer;
+		Jungle::IndexBufferRef indexBuffer;
 		indexBuffer.reset(Jungle::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
 		m_VertexArray->SetIndexBuffer(indexBuffer);
 
 		m_SquareVA.reset(Jungle::VertexArray::Create());
 
-		float squareVertices[3 * 4] = {
-			-0.75f, -0.75f, 0.0f,
-				0.75f, -0.75f, 0.0f,
-				0.75f,  0.75f, 0.0f,
-			-0.75f,  0.75f, 0.0f
+		float squareVertices[5 * 4] = {
+			-0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
+			 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+			 0.5f,  0.5f, 0.0f, 1.0f, 1.0f,
+			-0.5f,  0.5f, 0.0f, 0.0f, 1.0f,
 		};
 
-		std::shared_ptr<Jungle::VertexBuffer> squareVB;
+		Jungle::VertexBufferRef squareVB;
 		squareVB.reset(Jungle::VertexBuffer::Create(squareVertices, sizeof(squareVertices)));
 		Jungle::BufferLayout squareLayout = {
-			{ Jungle::ShaderDataType::Float3, "a_Position" }
+			{ Jungle::ShaderDataType::Float3, "a_Position" },
+			{ Jungle::ShaderDataType::Float2, "a_TexCoord" }
 		};
 
 		squareVB->SetLayout(squareLayout);
 		m_SquareVA->AddVertexBuffer(squareVB);
 
 		uint32_t squareIndices[6] = { 0, 1, 2, 2, 3, 0 };
-		std::shared_ptr<Jungle::IndexBuffer> squareIB;
+		Jungle::IndexBufferRef squareIB;
 		squareIB.reset(Jungle::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t)));
 		m_SquareVA->SetIndexBuffer(squareIB);
 
@@ -123,14 +126,49 @@ namespace Sandbox
 
 		in vec3 v_Position;
 
+		uniform vec3 u_Color;
+
 		void main()
 		{
-			color = vec4(0.2, 0.8, 0.3, 1.0);
+			color = vec4(u_Color, 1.0);
 		}
 		)";
 
-		m_Shader.reset(new Jungle::Shader(vertexSrc, fragmentSrc));
-		m_SquareShader.reset(new Jungle::Shader(squareVertexSrc, squareFragmentSrc));
+		std::string texVertexSrc = R"(
+		#version 330 core
+
+		layout(location = 0) in vec3 a_Position;
+		layout(location = 1) in vec2 a_TexCoord;
+
+		uniform mat4 u_ViewProjection;
+		uniform mat4 u_Transform;
+
+		out vec2 v_TexCoord;
+
+		void main()
+		{
+			v_TexCoord = a_TexCoord;
+			gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);
+		}
+		)";
+		std::string texFragmentSrc = R"(
+		#version 330 core
+
+		layout(location = 0) out vec4 color;
+
+		in vec2 v_TexCoord;
+
+		uniform vec3 u_Color;
+
+		void main()
+		{
+			color = vec4(v_TexCoord, 0.0, 1.0);
+		}
+		)";
+
+		m_Shader.reset(Jungle::Shader::Create(vertexSrc, fragmentSrc));
+		m_TexShader.reset(Jungle::Shader::Create(texVertexSrc, texFragmentSrc));
+		m_SquareShader.reset(Jungle::Shader::Create(squareVertexSrc, squareFragmentSrc));
 	}
 
 	ExampleLayer::~ExampleLayer()
@@ -168,25 +206,6 @@ namespace Sandbox
 			cameraRotation -= m_CameraSpeed * timestep;
 		}
 
-		if (Jungle::Input::IsKeyPressed(JNGL_KEY_J))
-		{
-			m_SquarePosition.x -= m_SquareSpeed * timestep;
-		}
-		else if (Jungle::Input::IsKeyPressed(JNGL_KEY_L))
-		{
-			m_SquarePosition.x += m_SquareSpeed * timestep;
-		}
-		if (Jungle::Input::IsKeyPressed(JNGL_KEY_I))
-		{
-			m_SquarePosition.y += m_SquareSpeed * timestep;
-		}
-		else if (Jungle::Input::IsKeyPressed(JNGL_KEY_K))
-		{
-			m_SquarePosition.y -= m_SquareSpeed * timestep;
-		}
-
-		glm::mat4 squareTransform = glm::translate(glm::mat4(1.0f), m_SquarePosition);
-
 		Jungle::RenderCommand::Clear({ 0.2f, 0.5f, 0.2f, 1 });
 
 		m_Camera.SetPosition(cameraPosition);
@@ -194,15 +213,22 @@ namespace Sandbox
 
 		Jungle::Renderer::BeginScene(m_Camera);
 
-		Jungle::Renderer::Submit(m_SquareShader, m_SquareVA, squareTransform);
-		Jungle::Renderer::Submit(m_Shader, m_VertexArray);
+		std::static_pointer_cast<Jungle::OpenGLShader>(m_SquareShader)->Bind();
+		std::static_pointer_cast<Jungle::OpenGLShader>(m_SquareShader)->UploadUniform("u_Color", m_SquareColor);
+
+		Jungle::Renderer::Submit(m_TexShader, m_SquareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
+		//Jungle::Renderer::Submit(m_Shader, m_VertexArray);
 
 		Jungle::Renderer::EndScene();
 	}
 
 	void ExampleLayer::OnImGuiRender()
 	{
+		ImGui::Begin("Settings");
 
+		ImGui::ColorEdit3("Square Color", glm::value_ptr(m_SquareColor));
+
+		ImGui::End();
 	}
 
 	void ExampleLayer::OnEvent(Jungle::Event& e)
