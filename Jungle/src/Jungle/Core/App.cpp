@@ -93,7 +93,6 @@ namespace Jungle
 
 	bool App::OnWindowResize(WindowResizeEvent& e)
 	{
-		JNGL_LOG_DEBUG("{0}x{1}", e.GetWidth(), e.GetHeight());
 		m_Minimized = !(e.GetWidth() | e.GetHeight());
 
 		if (m_Minimized)
