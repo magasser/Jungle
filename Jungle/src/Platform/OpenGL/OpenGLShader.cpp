@@ -1,107 +1,172 @@
 #include "jnglpch.h"
 #include "OpenGLShader.h"
 
-
+#include <fstream>
 #include <glad/glad.h>
 #include <glm/gtc/type_ptr.hpp>
 
 #include "Jungle/Core/Verification.h"
+
+#define MAX_SHADER_SOURCES	5
+
 namespace Jungle
 {
-	OpenGLShader::OpenGLShader(const std::string& vertexSrc, const std::string& fragmentSrc)
+	static GLenum ShaderTypeFromString(const std::string& type)
 	{
-		// Create an empty vertex shader handle
-		GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
+		if (type == "vertex")						return GL_VERTEX_SHADER;
+		if (type == "fragment" || type == "pixel")	return GL_FRAGMENT_SHADER;
 
-		// Send the vertex shader source code to GL
-		// Note that std::string's .c_str is NULL character terminated.
-		const char* source = vertexSrc.c_str();
-		glShaderSource(vertexShader, 1, &source, 0);
+		JNGL_CORE_ASSERT(false, "Unknown shader type '{0}'.", type);
+		return 0;
+	}
 
-		// Compile the vertex shader
-		glCompileShader(vertexShader);
+	OpenGLShader::OpenGLShader(const std::string& filepath)
+	{
+		std::string source = ReadFile(filepath);
+		auto shaderSources = PreProcess(source);
 
-		GLint isCompiled = 0;
-		glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &isCompiled);
-		if (isCompiled == GL_FALSE)
+		Compile(shaderSources);
+
+		auto lastSlash = filepath.find_last_of("/\\");
+		lastSlash = lastSlash == std::string::npos ? 0 : lastSlash + 1;
+
+		auto lastDot = filepath.rfind('.');
+		auto count = lastDot == std::string::npos ? filepath.size() - lastSlash : lastDot - lastSlash;
+
+		m_Name = filepath.substr(lastSlash, count);
+	}
+
+	OpenGLShader::OpenGLShader(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc)
+		: m_Name(name)
+	{
+		std::unordered_map<GLenum, std::string> sources;
+
+		sources[GL_VERTEX_SHADER] = vertexSrc;
+		sources[GL_FRAGMENT_SHADER] = fragmentSrc;
+
+		Compile(sources);
+	}
+
+	OpenGLShader::~OpenGLShader()
+	{
+		glDeleteProgram(m_RendererID);
+	}
+
+	std::string OpenGLShader::ReadFile(const std::string& filepath)
+	{
+		std::string result;
+
+		std::ifstream in(filepath, std::ios::in | std::ios::binary);
+
+		if (!in)
 		{
-			GLint maxLength = 0;
-			glGetShaderiv(vertexShader, GL_INFO_LOG_LENGTH, &maxLength);
-
-			// The maxLength includes the NULL character
-			std::vector<GLchar> infoLog(maxLength);
-			glGetShaderInfoLog(vertexShader, maxLength, &maxLength, &infoLog[0]);
-
-			// We don't need the shader anymore.
-			glDeleteShader(vertexShader);
-
-			JNGL_CORE_LOG_ERROR("{0}", infoLog.data());
-			JNGL_CORE_ASSERT(false, "Vertex shader compilation failure.");
-
-			return;
+			JNGL_CORE_LOG_ERROR("Failed to load shader file {0}.", filepath);
+			return result;
 		}
 
-		// Create an empty fragment shader handle
-		GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+		in.seekg(0, std::ios::end);
+		result.resize(in.tellg());
+		in.seekg(0, std::ios::beg);
 
-		// Send the fragment shader source code to GL
-		// Note that std::string's .c_str is NULL character terminated.
-		source = fragmentSrc.c_str();
-		glShaderSource(fragmentShader, 1, &source, 0);
+		in.read(&result[0], result.size());
 
-		// Compile the fragment shader
-		glCompileShader(fragmentShader);
+		in.close();
 
-		glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &isCompiled);
-		if (isCompiled == GL_FALSE)
+		return result;
+	}
+
+	std::unordered_map<GLenum, std::string> OpenGLShader::PreProcess(const std::string& source)
+	{
+		std::unordered_map<GLenum, std::string> shaderSources;
+
+		static const char* typeToken = "#type";
+		static const size_t typeTokenLength = strlen(typeToken);
+
+		uint64_t pos = source.find(typeToken, 0);
+		while (pos != std::string::npos)
 		{
-			GLint maxLength = 0;
-			glGetShaderiv(fragmentShader, GL_INFO_LOG_LENGTH, &maxLength);
+			uint64_t eol = source.find_first_of("\r\n", pos);
+			JNGL_CORE_ASSERT(eol != std::string::npos, "Syntax error.");
 
-			// The maxLength includes the NULL character
-			std::vector<GLchar> infoLog(maxLength);
-			glGetShaderInfoLog(fragmentShader, maxLength, &maxLength, &infoLog[0]);
+			uint64_t begin = pos + typeTokenLength + 1;
+			std::string type = source.substr(begin, eol - begin);
 
-			// We don't need the shader anymore.
-			glDeleteShader(fragmentShader);
-			// Either of them. Don't leak shaders.
-			glDeleteShader(vertexShader);
-
-			JNGL_CORE_LOG_ERROR("{0}", infoLog.data());
-			JNGL_CORE_ASSERT(false, "Fragment shader compilation failure.");
-
-			return;
+			GLenum glType = ShaderTypeFromString(type);
+			JNGL_CORE_VERIFY(glType, "Invalid shader type '{0}'.", type);
+			
+			uint64_t nextLinePos = source.find_first_not_of("\r\n", eol);
+			pos = source.find(typeToken, nextLinePos);
+			
+			shaderSources[glType] = source.substr(nextLinePos, pos - (nextLinePos == std::string::npos ? source.size() - 1 : nextLinePos));
 		}
 
-		// Vertex and fragment shaders are successfully compiled.
-		// Now time to link them together into a program.
-		// Get a program object.
-		m_RendererID = glCreateProgram();
+		return shaderSources;
+	}
 
-		// Attach our shaders to our program
-		glAttachShader(m_RendererID, vertexShader);
-		glAttachShader(m_RendererID, fragmentShader);
+	void OpenGLShader::Compile(const std::unordered_map<GLenum, std::string>& shaderSources)
+	{
+		JNGL_CORE_ASSERT(shaderSources.size() <= MAX_SHADER_SOURCES, "Unsupported number of shaders {0} maximum is {1}.", shaderSources.size(), MAX_SHADER_SOURCES);
 
-		// Link our program
-		glLinkProgram(m_RendererID);
+		std::array<GLenum, MAX_SHADER_SOURCES> glShaderIDs;
 
-		// Note the different functions here: glGetProgram* instead of glGetShader*.
+		uint32_t programID = glCreateProgram();
+		int glShaderIDIndex = 0;
+
+		for (auto& kv : shaderSources)
+		{
+			GLenum type = kv.first;
+			const std::string& source = kv.second;
+
+			GLuint shader = glCreateShader(type);
+
+			const char* sourceCStr = source.c_str();
+			glShaderSource(shader, 1, &sourceCStr, 0);
+
+			glCompileShader(shader);
+
+			GLint isCompiled = 0;
+			glGetShaderiv(shader, GL_COMPILE_STATUS, &isCompiled);
+			if (isCompiled == GL_FALSE)
+			{
+				GLint maxLength = 0;
+				glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &maxLength);
+
+				std::vector<GLchar> infoLog(maxLength);
+				glGetShaderInfoLog(shader, maxLength, &maxLength, &infoLog[0]);
+
+				glDeleteShader(shader);
+
+				JNGL_CORE_LOG_ERROR("{0}", infoLog.data());
+				JNGL_CORE_ASSERT(false, "Failed to compile shader.");
+				break;
+			}
+
+			glShaderIDs[glShaderIDIndex++] = shader;
+		}
+
+		for (auto id : glShaderIDs)
+		{
+			glAttachShader(programID, id);
+		}
+
+		glLinkProgram(programID);
+
 		GLint isLinked = 0;
-		glGetProgramiv(m_RendererID, GL_LINK_STATUS, (int*)&isLinked);
+		glGetProgramiv(programID, GL_LINK_STATUS, (int*)&isLinked);
 		if (isLinked == GL_FALSE)
 		{
 			GLint maxLength = 0;
-			glGetProgramiv(m_RendererID, GL_INFO_LOG_LENGTH, &maxLength);
+			glGetProgramiv(programID, GL_INFO_LOG_LENGTH, &maxLength);
 
-			// The maxLength includes the NULL character
 			std::vector<GLchar> infoLog(maxLength);
-			glGetProgramInfoLog(m_RendererID, maxLength, &maxLength, &infoLog[0]);
+			glGetProgramInfoLog(programID, maxLength, &maxLength, &infoLog[0]);
 
-			// We don't need the program anymore.
-			glDeleteProgram(m_RendererID);
-			// Don't leak shaders either.
-			glDeleteShader(vertexShader);
-			glDeleteShader(fragmentShader);
+			glDeleteProgram(programID);
+
+			for (auto id : glShaderIDs)
+			{
+				glDeleteShader(id);
+			}
 
 			JNGL_CORE_LOG_ERROR("{0}", infoLog.data());
 			JNGL_CORE_ASSERT(false, "Shader link compilation failure.");
@@ -109,14 +174,12 @@ namespace Jungle
 			return;
 		}
 
-		// Always detach shaders after a successful link.
-		glDetachShader(m_RendererID, vertexShader);
-		glDetachShader(m_RendererID, fragmentShader);
-	}
+		for (auto id : glShaderIDs)
+		{
+			glDetachShader(programID, id);
+		}
 
-	OpenGLShader::~OpenGLShader()
-	{
-		glDeleteProgram(m_RendererID);
+		m_RendererID = programID;
 	}
 
 	void OpenGLShader::Bind() const
@@ -129,7 +192,7 @@ namespace Jungle
 		glUseProgram(0);
 	}
 
-	void OpenGLShader::UploadUniform(const std::string& name, int i)
+	void OpenGLShader::UploadUniform(const std::string& name, int i) const
 	{
 		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
 
@@ -138,7 +201,7 @@ namespace Jungle
 		glUniform1i(location, i);
 	}
 
-	void OpenGLShader::UploadUniform(const std::string& name, float f)
+	void OpenGLShader::UploadUniform(const std::string& name, float f) const
 	{
 		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
 
@@ -147,7 +210,7 @@ namespace Jungle
 		glUniform1f(location, f);
 	}
 
-	void OpenGLShader::UploadUniform(const std::string& name, const glm::vec2& vec)
+	void OpenGLShader::UploadUniform(const std::string& name, const glm::vec2& vec) const
 	{
 		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
 
@@ -156,7 +219,7 @@ namespace Jungle
 		glUniform2fv(location, 1, glm::value_ptr(vec));
 	}
 
-	void OpenGLShader::UploadUniform(const std::string& name, const glm::vec3& vec)
+	void OpenGLShader::UploadUniform(const std::string& name, const glm::vec3& vec) const
 	{
 		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
 
@@ -165,7 +228,7 @@ namespace Jungle
 		glUniform3fv(location, 1, glm::value_ptr(vec));
 	}
 
-	void OpenGLShader::UploadUniform(const std::string& name, const glm::vec4& vec)
+	void OpenGLShader::UploadUniform(const std::string& name, const glm::vec4& vec) const
 	{
 		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
 
@@ -174,7 +237,7 @@ namespace Jungle
 		glUniform4fv(location, 1, glm::value_ptr(vec));
 	}
 
-	void OpenGLShader::UploadUniform(const std::string& name, const glm::mat2& mat)
+	void OpenGLShader::UploadUniform(const std::string& name, const glm::mat2& mat) const
 	{
 		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
 
@@ -183,7 +246,7 @@ namespace Jungle
 		glUniformMatrix2fv(location, 1, GL_FALSE, glm::value_ptr(mat));
 	}
 
-	void OpenGLShader::UploadUniform(const std::string& name, const glm::mat3& mat)
+	void OpenGLShader::UploadUniform(const std::string& name, const glm::mat3& mat) const
 	{
 		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
 
@@ -192,7 +255,7 @@ namespace Jungle
 		glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(mat));
 	}
 
-	void OpenGLShader::UploadUniform(const std::string& name, const glm::mat4& mat)
+	void OpenGLShader::UploadUniform(const std::string& name, const glm::mat4& mat) const
 	{
 		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
 

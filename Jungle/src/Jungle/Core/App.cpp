@@ -5,6 +5,7 @@
 
 #include "Verification.h"
 #include "Input.h"
+#include "Jungle/Rendering/Renderer.h"
 
 namespace Jungle
 {
@@ -18,6 +19,8 @@ namespace Jungle
 
 		m_Window = std::unique_ptr<Window>(Window::Create());
 		m_Window->SetEventCallback(JNGL_BIND_EVENT_FN(App::OnEvent));
+
+		Renderer::Init();
 
 		m_ImGuiLayer = new ImGuiLayer();
 		PushOverlay(m_ImGuiLayer);

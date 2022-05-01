@@ -7,12 +7,17 @@ namespace Jungle
 	class JUNGLE_API RenderCommand
 	{
 	public:
+		inline static void Init()
+		{
+			s_RendererAPI->Init();
+		}
+
 		inline static void Clear(const glm::vec4& color)
 		{
 			s_RendererAPI->Clear(color);
 		}
 
-		inline static void DrawIndexed(const VertexArrayRef& vertexArray)
+		inline static void DrawIndexed(const Ref<VertexArray>& vertexArray)
 		{
 			s_RendererAPI->DrawIndexed(vertexArray);
 		}

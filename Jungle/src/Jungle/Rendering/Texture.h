@@ -20,8 +20,6 @@ namespace Jungle
 	class JUNGLE_API Texture2D : public Texture
 	{
 	public:
-		static Texture2DRef Create(const std::string& path);
+		static Ref<Texture2D> Create(const std::string& path);
 	};
-
-	using Texture2DRef = Ref<Texture2D>;
 }

@@ -26,11 +26,11 @@ namespace Sandbox
 		bool OnKeyPressedEvent(Jungle::KeyPressedEvent& e);
 
 	private:
-		Jungle::ShaderRef m_Shader;
-		Jungle::VertexArrayRef m_VertexArray;
+		Jungle::ShaderLibrary m_ShaderLibrary;
+		Jungle::Ref<Jungle::VertexArray> m_VertexArray;
 
-		Jungle::ShaderRef m_SquareShader, m_TexShader;
-		Jungle::VertexArrayRef m_SquareVA;
+		Jungle::Ref<Jungle::Texture2D> m_Texture, m_LogoTexture;
+		Jungle::Ref<Jungle::VertexArray> m_SquareVA;
 
 		Jungle::OrthographicCamera m_Camera;
 		float m_CameraSpeed = 0.1f;
