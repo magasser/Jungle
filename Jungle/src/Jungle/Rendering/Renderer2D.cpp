@@ -20,6 +20,8 @@ namespace Jungle
 
 	void Renderer2D::Init()
 	{
+		JNGL_PROFILE_FUNCTION();
+
 		s_Data = new Renderer2DStorage();
 
 		s_Data->QuadVertexArray = VertexArray::Create();
@@ -56,17 +58,22 @@ namespace Jungle
 
 	void Renderer2D::Shutdown()
 	{
+		JNGL_PROFILE_FUNCTION();
+
 		delete s_Data;
 	}
 
 	void Renderer2D::BeginScene(const Camera& camera)
 	{
+		JNGL_PROFILE_FUNCTION();
+
 		s_Data->TextureShader->Bind();
 		s_Data->TextureShader->SetMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
 	}
 
 	void Renderer2D::EndScene()
 	{
+		JNGL_PROFILE_FUNCTION();
 	}
 
 	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color)
@@ -76,6 +83,8 @@ namespace Jungle
 
 	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color)
 	{
+		JNGL_PROFILE_FUNCTION();
+
 		s_Data->TextureShader->SetFloat4("u_Color", color);
 		s_Data->WhiteTexture->Bind();
 
@@ -93,6 +102,8 @@ namespace Jungle
 
 	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D>& texture)
 	{
+		JNGL_PROFILE_FUNCTION();
+
 		static glm::vec4 whiteColor(1.0f);
 		s_Data->TextureShader->SetFloat4("u_Color", whiteColor);
 		texture->Bind();

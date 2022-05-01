@@ -13,6 +13,8 @@ namespace Jungle
 
 	App::App()
 	{
+		JNGL_PROFILE_FUNCTION();
+
 		JNGL_CORE_ASSERT(!s_Instance, "App already exists.");
 
 		s_Instance = this;
@@ -28,28 +30,44 @@ namespace Jungle
 
 	App::~App()
 	{
+		JNGL_PROFILE_FUNCTION();
+
+		Renderer::Shutdown();
 	}
 
 	void App::Run()
 	{
+		JNGL_PROFILE_FUNCTION();
+
 		while (m_Running)
 		{
+			JNGL_PROFILE_SCOPE("App Run Loop");
+
 			float time = Timestep::GetTime();
 			Timestep timestep = time - m_LastFrameTime;
 			m_LastFrameTime = time;
 
 			if (!m_Minimized)
 			{
-				for (Layer* layer : m_LayerStack)
 				{
-					layer->OnUpdate(timestep);
+					JNGL_PROFILE_SCOPE("App Layers OnUpdate");
+
+					for (Layer* layer : m_LayerStack)
+					{
+						layer->OnUpdate(timestep);
+					}
+
 				}
 			}
 
 			m_ImGuiLayer->Begin();
-			for (Layer* layer : m_LayerStack)
 			{
-				layer->OnImGuiRender();
+				JNGL_PROFILE_SCOPE("App Layers OnImGuiRender");
+
+				for (Layer* layer : m_LayerStack)
+				{
+					layer->OnImGuiRender();
+				}
 			}
 			m_ImGuiLayer->End();
 
@@ -59,6 +77,8 @@ namespace Jungle
 
 	void App::OnEvent(Event& e)
 	{
+		JNGL_PROFILE_FUNCTION();
+
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<WindowCloseEvent>(JNGL_BIND_EVENT_FN(App::OnWindowClose));
 		dispatcher.Dispatch<WindowResizeEvent>(JNGL_BIND_EVENT_FN(App::OnWindowResize));
@@ -77,12 +97,18 @@ namespace Jungle
 
 	void App::PushLayer(Layer* layer)
 	{
+		JNGL_PROFILE_FUNCTION();
+
 		m_LayerStack.PushLayer(layer);
+		layer->OnAttach();
 	}
 
 	void App::PushOverlay(Layer* overlay)
 	{
+		JNGL_PROFILE_FUNCTION();
+
 		m_LayerStack.PushOverlay(overlay);
+		overlay->OnAttach();
 	}
 
 	bool App::OnWindowClose(WindowCloseEvent& e)
@@ -93,6 +119,8 @@ namespace Jungle
 
 	bool App::OnWindowResize(WindowResizeEvent& e)
 	{
+		JNGL_PROFILE_FUNCTION();
+
 		m_Minimized = !(e.GetWidth() | e.GetHeight());
 
 		if (m_Minimized)

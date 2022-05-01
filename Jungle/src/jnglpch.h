@@ -13,6 +13,10 @@
 #include <unordered_map>
 #include <unordered_set>
 
+#include "Jungle/Core/Verification.h"
+
+#include "Jungle/Debug/Instrumentor.h"
+
 #ifdef JNGL_PLATFORM_WINDOWS
 	#include <Windows.h>
 #endif

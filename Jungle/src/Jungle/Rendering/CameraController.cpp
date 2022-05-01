@@ -25,6 +25,8 @@ namespace Jungle
 
 	void OrthographicCameraController::OnUpdate(Timestep timestep)
 	{
+		JNGL_PROFILE_FUNCTION();
+
 		if (Input::IsKeyPressed(JNGL_KEY_A))
 		{
 			m_Position.x -= m_TranslationSpeed * timestep;
@@ -61,6 +63,8 @@ namespace Jungle
 
 	void OrthographicCameraController::OnEvent(Event& e)
 	{
+		JNGL_PROFILE_FUNCTION();
+
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<MouseScrolledEvent>(JNGL_BIND_EVENT_FN(OrthographicCameraController::OnMouseScrolled));
 		dispatcher.Dispatch<WindowResizeEvent>(JNGL_BIND_EVENT_FN(OrthographicCameraController::OnWindowResized));
@@ -68,6 +72,8 @@ namespace Jungle
 
 	bool OrthographicCameraController::OnMouseScrolled(MouseScrolledEvent& e)
 	{
+		JNGL_PROFILE_FUNCTION();
+
 		SetZoomLevel(m_ZoomLevel - e.GetYOffest() * m_ZoomSpeed);
 		m_Camera.SetProjectionMatrix(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
 
@@ -76,6 +82,8 @@ namespace Jungle
 
 	bool OrthographicCameraController::OnWindowResized(WindowResizeEvent& e)
 	{
+		JNGL_PROFILE_FUNCTION();
+
 		m_AspectRatio = (float)e.GetWidth() / (float)e.GetHeight();
 		m_Camera.SetProjectionMatrix(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
 

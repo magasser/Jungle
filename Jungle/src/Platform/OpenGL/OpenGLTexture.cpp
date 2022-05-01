@@ -11,6 +11,8 @@ namespace Jungle
 	OpenGLTexture2D::OpenGLTexture2D(uint32_t width, uint32_t height)
 		: m_Width(width), m_Height(height)
 	{
+		JNGL_PROFILE_FUNCTION();
+
 		m_InternalFormat = GL_RGBA8;
 		m_DataFormat = GL_RGBA;
 
@@ -28,9 +30,16 @@ namespace Jungle
 	OpenGLTexture2D::OpenGLTexture2D(const std::string& path)
 		: m_Path(path)
 	{
+		JNGL_PROFILE_FUNCTION();
+
 		int width, height, channels;
 		stbi_set_flip_vertically_on_load(1);
-		stbi_uc* data = stbi_load(path.c_str(), &width, &height, &channels, 0);
+		stbi_uc* data = nullptr;
+		{
+			JNGL_PROFILE_SCOPE("stbi_load - OpenGLTexture2D::OpenGLTexture2D(const std::string&)");
+			data = stbi_load(path.c_str(), &width, &height, &channels, 0);
+
+		}
 		JNGL_CORE_ASSERT(data, "Failed to load image.");
 
 		m_Width = width;
@@ -60,11 +69,15 @@ namespace Jungle
 
 	OpenGLTexture2D::~OpenGLTexture2D()
 	{
+		JNGL_PROFILE_FUNCTION();
+
 		glDeleteTextures(1, &m_RendererID);
 	}
 
 	void OpenGLTexture2D::SetData(const void* data, uint32_t size)
 	{
+		JNGL_PROFILE_FUNCTION();
+
 		uint32_t bytePerPixel = m_DataFormat == GL_RGBA ? 4 : 3;
 		JNGL_CORE_ASSERT(size == m_Width * m_Height * bytePerPixel, "Size of data buffer must cover the whole texture.")
 
@@ -73,6 +86,8 @@ namespace Jungle
 
 	void OpenGLTexture2D::Bind(uint32_t slot) const
 	{
+		JNGL_PROFILE_FUNCTION();
+
 		glBindTextureUnit(slot, m_RendererID);
 	}
 }

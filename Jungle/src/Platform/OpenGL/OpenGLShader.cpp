@@ -22,6 +22,8 @@ namespace Jungle
 
 	OpenGLShader::OpenGLShader(const std::string& filepath)
 	{
+		JNGL_PROFILE_FUNCTION();
+
 		std::string source = ReadFile(filepath);
 		auto shaderSources = PreProcess(source);
 
@@ -39,6 +41,8 @@ namespace Jungle
 	OpenGLShader::OpenGLShader(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc)
 		: m_Name(name)
 	{
+		JNGL_PROFILE_FUNCTION();
+
 		std::unordered_map<GLenum, std::string> sources;
 
 		sources[GL_VERTEX_SHADER] = vertexSrc;
@@ -49,11 +53,15 @@ namespace Jungle
 
 	OpenGLShader::~OpenGLShader()
 	{
+		JNGL_PROFILE_FUNCTION();
+
 		glDeleteProgram(m_RendererID);
 	}
 
 	std::string OpenGLShader::ReadFile(const std::string& filepath)
 	{
+		JNGL_PROFILE_FUNCTION();
+
 		std::string result;
 
 		std::ifstream in(filepath, std::ios::in | std::ios::binary);
@@ -77,6 +85,8 @@ namespace Jungle
 
 	std::unordered_map<GLenum, std::string> OpenGLShader::PreProcess(const std::string& source)
 	{
+		JNGL_PROFILE_FUNCTION();
+
 		std::unordered_map<GLenum, std::string> shaderSources;
 
 		static const char* typeToken = "#type";
@@ -105,6 +115,8 @@ namespace Jungle
 
 	void OpenGLShader::Compile(const std::unordered_map<GLenum, std::string>& shaderSources)
 	{
+		JNGL_PROFILE_FUNCTION();
+
 		JNGL_CORE_ASSERT(shaderSources.size() <= MAX_SHADER_SOURCES, "Unsupported number of shaders {0} maximum is {1}.", shaderSources.size(), MAX_SHADER_SOURCES);
 
 		std::array<GLenum, MAX_SHADER_SOURCES> glShaderIDs;
@@ -184,36 +196,50 @@ namespace Jungle
 
 	void OpenGLShader::Bind() const
 	{
+		JNGL_PROFILE_FUNCTION();
+
 		glUseProgram(m_RendererID);
 	}
 
 	void OpenGLShader::Unbind() const
 	{
+		JNGL_PROFILE_FUNCTION();
+
 		glUseProgram(0);
 	}
 
 	void OpenGLShader::SetInt(const std::string& name, int value)
 	{
+		JNGL_PROFILE_FUNCTION();
+
 		UploadUniformInt(name, value);
 	}
 
 	void OpenGLShader::SetFloat(const std::string& name, float value)
 	{
+		JNGL_PROFILE_FUNCTION();
+
 		UploadUniformFloat(name, value);
 	}
 
 	void OpenGLShader::SetFloat3(const std::string& name, const glm::vec3& value)
 	{
+		JNGL_PROFILE_FUNCTION();
+
 		UploadUniformFloat3(name, value);
 	}
 
 	void OpenGLShader::SetFloat4(const std::string& name, const glm::vec4& value)
 	{
+		JNGL_PROFILE_FUNCTION();
+
 		UploadUniformFloat4(name, value);
 	}
 
 	void OpenGLShader::SetMat4(const std::string& name, const glm::mat4& value)
 	{
+		JNGL_PROFILE_FUNCTION();
+
 		UploadUniformMat4(name, value);
 	}
 

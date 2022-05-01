@@ -11,6 +11,7 @@ namespace Jungle
 	{
 	public:
 		static void Init();
+		static void Shutdown();
 
 		static void BeginScene(Camera& camera);
 		static void EndScene();

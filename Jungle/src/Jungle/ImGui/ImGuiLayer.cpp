@@ -24,6 +24,7 @@ namespace Jungle
 
 	void ImGuiLayer::OnAttach()
 	{
+		JNGL_PROFILE_FUNCTION();
 
 		// Setup Dear ImGui context
 		IMGUI_CHECKVERSION();
@@ -58,6 +59,8 @@ namespace Jungle
 
 	void ImGuiLayer::OnDetach()
 	{
+		JNGL_PROFILE_FUNCTION();
+
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
 		ImGui::DestroyContext();
@@ -65,6 +68,8 @@ namespace Jungle
 
 	void ImGuiLayer::Begin()
 	{
+		JNGL_PROFILE_FUNCTION();
+
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
@@ -72,6 +77,8 @@ namespace Jungle
 
 	void ImGuiLayer::End()
 	{
+		JNGL_PROFILE_FUNCTION();
+
 		ImGuiIO& io = ImGui::GetIO();
 		App& app = App::Get();
 		io.DisplaySize = ImVec2((float)app.GetWindow().GetWidth(), (float)app.GetWindow().GetHeight());
