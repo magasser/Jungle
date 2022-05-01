@@ -17,7 +17,7 @@ namespace Jungle
 
 		s_Instance = this;
 
-		m_Window = std::unique_ptr<Window>(Window::Create());
+		m_Window = Window::Create();
 		m_Window->SetEventCallback(JNGL_BIND_EVENT_FN(App::OnEvent));
 
 		Renderer::Init();
@@ -38,9 +38,12 @@ namespace Jungle
 			Timestep timestep = time - m_LastFrameTime;
 			m_LastFrameTime = time;
 
-			for (Layer* layer : m_LayerStack)
+			if (!m_Minimized)
 			{
-				layer->OnUpdate(timestep);
+				for (Layer* layer : m_LayerStack)
+				{
+					layer->OnUpdate(timestep);
+				}
 			}
 
 			m_ImGuiLayer->Begin();
@@ -58,6 +61,7 @@ namespace Jungle
 	{
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<WindowCloseEvent>(JNGL_BIND_EVENT_FN(App::OnWindowClose));
+		dispatcher.Dispatch<WindowResizeEvent>(JNGL_BIND_EVENT_FN(App::OnWindowResize));
 
 		auto [x, y] = Input::GetMousePosition();
 
@@ -85,5 +89,20 @@ namespace Jungle
 	{
 		m_Running = false;
 		return true;
+	}
+
+	bool App::OnWindowResize(WindowResizeEvent& e)
+	{
+		JNGL_LOG_DEBUG("{0}x{1}", e.GetWidth(), e.GetHeight());
+		m_Minimized = !(e.GetWidth() | e.GetHeight());
+
+		if (m_Minimized)
+		{
+			return false;
+		}
+
+		Renderer::OnWindowResize(e.GetWidth(), e.GetHeight());
+
+		return false;
 	}
 }

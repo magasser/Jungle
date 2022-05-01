@@ -34,6 +34,8 @@ namespace Jungle
 	public:
 		OrthographicCamera(float left, float right, float bottom, float top);
 
+		void SetProjectionMatrix(float left, float right, float bottom, float top);
+
 		const float GetRotation() const { return m_Rotation; }
 		void SetRotation(float rotation) { m_Rotation = rotation; RecalculateViewMatrix(); }
 

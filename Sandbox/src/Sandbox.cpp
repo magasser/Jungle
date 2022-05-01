@@ -20,7 +20,7 @@ namespace Sandbox
 	
 	ExampleLayer::ExampleLayer()
 		: Layer("ExampleLayer"),
-		m_Camera(-1.6f, 1.6f, -0.9f, 0.9f)
+		m_CameraController(1280.0f / 720.0f, true)
 	{
 		m_VertexArray = Jungle::VertexArray::Create();
 
@@ -152,40 +152,11 @@ namespace Sandbox
 
 	void ExampleLayer::OnUpdate(Jungle::Timestep timestep)
 	{
-		glm::vec3 cameraPosition = m_Camera.GetPosition();
-		float cameraRotation = m_Camera.GetRotation();
-
-		if (Jungle::Input::IsKeyPressed(JNGL_KEY_A))
-		{
-			cameraPosition.x -= m_CameraSpeed * timestep;
-		}
-		else if (Jungle::Input::IsKeyPressed(JNGL_KEY_D))
-		{
-			cameraPosition.x += m_CameraSpeed * timestep;
-		}
-		if (Jungle::Input::IsKeyPressed(JNGL_KEY_W))
-		{
-			cameraPosition.y += m_CameraSpeed * timestep;
-		}
-		else if (Jungle::Input::IsKeyPressed(JNGL_KEY_S))
-		{
-			cameraPosition.y -= m_CameraSpeed * timestep;
-		}
-		if (Jungle::Input::IsKeyPressed(JNGL_KEY_Q))
-		{
-			cameraRotation += m_CameraSpeed * timestep;
-		}
-		else if (Jungle::Input::IsKeyPressed(JNGL_KEY_E))
-		{
-			cameraRotation -= m_CameraSpeed * timestep;
-		}
+		m_CameraController.OnUpdate(timestep);
 
 		Jungle::RenderCommand::Clear({ 0.2f, 0.5f, 0.2f, 1 });
 
-		m_Camera.SetPosition(cameraPosition);
-		m_Camera.SetRotation(cameraRotation);
-
-		Jungle::Renderer::BeginScene(m_Camera);
+		Jungle::Renderer::BeginScene(m_CameraController.GetCamera());
 
 		auto textureShader = m_ShaderLibrary.Get("Texture");
 		auto squareShader = m_ShaderLibrary.Get("Square");
@@ -202,6 +173,21 @@ namespace Sandbox
 		Jungle::Renderer::EndScene();
 	}
 
+	void ExampleLayer::OnEvent(Jungle::Event& e)
+	{
+		m_CameraController.OnEvent(e);
+
+		if (e.GetEventType() == Jungle::EventType::WindowResize)
+		{
+			auto& re = (Jungle::WindowResizeEvent&)e;
+
+			float zoom = (float)re.GetWidth() / 1280.0f;
+
+			m_CameraController.SetZoomLevel(zoom);
+
+		}
+	}
+
 	void ExampleLayer::OnImGuiRender()
 	{
 		ImGui::Begin("Settings");
@@ -209,17 +195,5 @@ namespace Sandbox
 		ImGui::ColorEdit3("Square Color", glm::value_ptr(m_SquareColor));
 
 		ImGui::End();
-	}
-
-	void ExampleLayer::OnEvent(Jungle::Event& e)
-	{
-		Jungle::EventDispatcher dispatcher(e);
-		dispatcher.Dispatch<Jungle::KeyPressedEvent>(JNGL_BIND_EVENT_FN(ExampleLayer::OnKeyPressedEvent));
-	}
-
-	bool ExampleLayer::OnKeyPressedEvent(Jungle::KeyPressedEvent& e)
-	{
-
-		return false;
 	}
 }

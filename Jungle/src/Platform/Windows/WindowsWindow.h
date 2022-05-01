@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Jungle/Core/Window.h"
+#include "Jungle/Rendering/GraphicsContext.h"
 
 struct GLFWwindow;
 
