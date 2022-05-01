@@ -1,7 +1,7 @@
 #include "jnglpch.h"
 #include "VertexArray.h"
 
-#include "Renderer.h"
+#include "Jungle/Rendering/Renderer.h"
 #include "Platform/OpenGL/OpenGLVertexArray.h"
 
 namespace Jungle

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Core.h"
-#include "Timestep.h"
+#include "Jungle/Core/Core.h"
+#include "Jungle/Core/Timestep.h"
 #include "Jungle/Events/Event.h"
 
 namespace Jungle
@@ -15,8 +15,8 @@ namespace Jungle
 		virtual void OnAttach() { }
 		virtual void OnDetach() { }
 		virtual void OnUpdate(Timestep timestep) { }
-		virtual void OnImGuiRender() { }
 		virtual void OnEvent(Event& e) { }
+		virtual void OnImGuiRender() {}
 
 		inline const std::string& GetName() const { return m_DebugName; }
 

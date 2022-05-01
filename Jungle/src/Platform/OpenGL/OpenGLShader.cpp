@@ -192,7 +192,22 @@ namespace Jungle
 		glUseProgram(0);
 	}
 
-	void OpenGLShader::UploadUniform(const std::string& name, int i) const
+	void OpenGLShader::SetFloat3(const std::string& name, const glm::vec3& value)
+	{
+		UploadUniformFloat3(name, value);
+	}
+
+	void OpenGLShader::SetFloat4(const std::string& name, const glm::vec4& value)
+	{
+		UploadUniformFloat4(name, value);
+	}
+
+	void OpenGLShader::SetMat4(const std::string& name, const glm::mat4& value)
+	{
+		UploadUniformMat4(name, value);
+	}
+
+	void OpenGLShader::UploadUniformInt(const std::string& name, int i) const
 	{
 		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
 
@@ -201,7 +216,7 @@ namespace Jungle
 		glUniform1i(location, i);
 	}
 
-	void OpenGLShader::UploadUniform(const std::string& name, float f) const
+	void OpenGLShader::UploadUniformFloat(const std::string& name, float f) const
 	{
 		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
 
@@ -210,7 +225,7 @@ namespace Jungle
 		glUniform1f(location, f);
 	}
 
-	void OpenGLShader::UploadUniform(const std::string& name, const glm::vec2& vec) const
+	void OpenGLShader::UploadUniformFloat2(const std::string& name, const glm::vec2& vec) const
 	{
 		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
 
@@ -219,7 +234,7 @@ namespace Jungle
 		glUniform2fv(location, 1, glm::value_ptr(vec));
 	}
 
-	void OpenGLShader::UploadUniform(const std::string& name, const glm::vec3& vec) const
+	void OpenGLShader::UploadUniformFloat3(const std::string& name, const glm::vec3& vec) const
 	{
 		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
 
@@ -228,7 +243,7 @@ namespace Jungle
 		glUniform3fv(location, 1, glm::value_ptr(vec));
 	}
 
-	void OpenGLShader::UploadUniform(const std::string& name, const glm::vec4& vec) const
+	void OpenGLShader::UploadUniformFloat4(const std::string& name, const glm::vec4& vec) const
 	{
 		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
 
@@ -237,7 +252,7 @@ namespace Jungle
 		glUniform4fv(location, 1, glm::value_ptr(vec));
 	}
 
-	void OpenGLShader::UploadUniform(const std::string& name, const glm::mat2& mat) const
+	void OpenGLShader::UploadUniformMat2(const std::string& name, const glm::mat2& mat) const
 	{
 		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
 
@@ -246,7 +261,7 @@ namespace Jungle
 		glUniformMatrix2fv(location, 1, GL_FALSE, glm::value_ptr(mat));
 	}
 
-	void OpenGLShader::UploadUniform(const std::string& name, const glm::mat3& mat) const
+	void OpenGLShader::UploadUniformMat3(const std::string& name, const glm::mat3& mat) const
 	{
 		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
 
@@ -255,7 +270,7 @@ namespace Jungle
 		glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(mat));
 	}
 
-	void OpenGLShader::UploadUniform(const std::string& name, const glm::mat4& mat) const
+	void OpenGLShader::UploadUniformMat4(const std::string& name, const glm::mat4& mat) const
 	{
 		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
 

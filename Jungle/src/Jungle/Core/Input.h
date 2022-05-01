@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Core.h"
-#include "KeyCodes.h"
-#include "MouseButtonCodes.h"
+#include "Jungle/Core/Core.h"
+#include "Jungle/Core/KeyCodes.h"
+#include "Jungle/Core/MouseButtonCodes.h"
 
 namespace Jungle
 {

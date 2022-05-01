@@ -1,8 +1,8 @@
 #include "jnglpch.h"
 #include "CameraController.h"
 
-#include "Input.h"
-#include "KeyCodes.h"
+#include "Jungle/Core/Input.h"
+#include "Jungle/Core/KeyCodes.h"
 
 namespace Jungle
 {

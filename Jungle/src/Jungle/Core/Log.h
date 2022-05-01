@@ -1,9 +1,9 @@
 #pragma once
 
-#include "spdlog/spdlog.h"
-#include "spdlog/fmt/ostr.h"
+#include <spdlog/spdlog.h>
+#include <spdlog/fmt/ostr.h>
 
-#include "Core.h"
+#include "Jungle/Core/Core.h"
 
 namespace Jungle
 {

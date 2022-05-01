@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Core.h"
-#include "Window.h"
-#include "LayerStack.h"
-#include "Timestep.h"
+#include "Jungle/Core/Core.h"
+#include "Jungle/Core/Window.h"
+#include "Jungle/Core/LayerStack.h"
+#include "Jungle/Core/Timestep.h"
 
 #include "Jungle/Events/AppEvent.h"
 #include "Jungle/ImGui/ImGuiLayer.h"

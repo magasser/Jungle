@@ -1,9 +1,7 @@
 #pragma once
 
-#include <vector>
-
-#include "Core.h"
-#include "Layer.h"
+#include "Jungle/Core/Core.h"
+#include "Jungle/Core/Layer.h"
 
 namespace Jungle
 {

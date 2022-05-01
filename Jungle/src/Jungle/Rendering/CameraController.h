@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Core.h"
-#include "Timestep.h"
+#include "Jungle/Core/Core.h"
+#include "Jungle/Core/Timestep.h"
 #include "Jungle/Events/AppEvent.h"
 #include "Jungle/Events/MouseEvent.h"
 #include "Jungle/Rendering/Camera.h"

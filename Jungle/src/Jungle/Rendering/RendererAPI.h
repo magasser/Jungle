@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Jungle/Core/Core.h"
-#include "VertexArray.h"
+#include <glm/glm.hpp>
 
-#include "../../../vendor/GLM/glm/glm.hpp"
+#include "Jungle/Core/Core.h"
+#include "Jungle/Rendering/VertexArray.h"
 
 namespace Jungle
 {

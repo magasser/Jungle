@@ -3,8 +3,7 @@
 
 #ifdef JNGL_PLATFORM_WINDOWS
 #include <profileapi.h>
-#include "Verification.h"
-#include <GLFW/glfw3.h>
+#include "Jungle/Core/Verification.h"
 #else
 #include <GLFW/glfw3.h>
 #endif

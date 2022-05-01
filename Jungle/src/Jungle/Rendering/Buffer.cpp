@@ -1,7 +1,7 @@
 #include "jnglpch.h"
 #include "Buffer.h"
 
-#include "Renderer.h"
+#include "Jungle/Rendering/Renderer.h"
 #include "Jungle/Core/Verification.h"
 
 #include "Platform/OpenGL/OpenGLBuffer.h"

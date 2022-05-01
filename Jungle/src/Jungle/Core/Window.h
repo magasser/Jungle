@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core.h"
+#include "Jungle/Core/Core.h"
 #include "Jungle/Events/Event.h"
 
 namespace Jungle

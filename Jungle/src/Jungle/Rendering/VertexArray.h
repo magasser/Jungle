@@ -1,9 +1,7 @@
 #pragma once
 
-#include <string>
-
 #include "Jungle/Core/Core.h"
-#include "Buffer.h"
+#include "Jungle/Rendering/Buffer.h"
 
 namespace Jungle
 {

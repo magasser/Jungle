@@ -10,9 +10,6 @@
 #include "Jungle/Core/LayerStack.h"
 #include "Jungle/Core/Timestep.h"
 
-// Entrypoint
-#include "Jungle/Core/EntryPoint.h"
-
 // Input
 #include "Jungle/Core/Input.h"
 #include "Jungle/Core/KeyCodes.h"
@@ -28,6 +25,7 @@
 #include "Jungle/Rendering/Buffer.h"
 #include "Jungle/Rendering/GraphicsContext.h"
 #include "Jungle/Rendering/Renderer.h"
+#include "Jungle/Rendering/Renderer2D.h"
 #include "Jungle/Rendering/RenderCommand.h"
 #include "Jungle/Rendering/RendererAPI.h"
 #include "Jungle/Rendering/Shader.h"
@@ -36,7 +34,7 @@
 
 // Camera
 #include "Jungle/Rendering/Camera.h"
-#include "Jungle/Core/CameraController.h"
+#include "Jungle/Rendering/CameraController.h"
 
 // UI
 #include "Jungle/ImGui/ImGuiLayer.h"

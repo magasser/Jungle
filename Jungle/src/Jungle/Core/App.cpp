@@ -3,8 +3,8 @@
 
 #include <glad/glad.h>
 
-#include "Verification.h"
-#include "Input.h"
+#include "Jungle/Core/Verification.h"
+#include "Jungle/Core/Input.h"
 #include "Jungle/Rendering/Renderer.h"
 
 namespace Jungle

@@ -1,13 +1,12 @@
 #pragma once
 
 #include "Jungle/Core/Core.h"
-#include "RenderCommand.h"
-#include "Camera.h"
-#include "Shader.h"
+#include "Jungle/Rendering/RenderCommand.h"
+#include "Jungle/Rendering/Camera.h"
+#include "Jungle/Rendering/Shader.h"
 
 namespace Jungle
 {
-
 	class JUNGLE_API Renderer
 	{
 	public:

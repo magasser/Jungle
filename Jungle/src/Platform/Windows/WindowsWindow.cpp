@@ -1,4 +1,5 @@
 #include "jnglpch.h"
+#include "WindowsWindow.h"
 
 #include <GLFW/glfw3.h>
 
@@ -8,8 +9,6 @@
 #include "Jungle/Events/KeyEvent.h"
 
 #include "Platform/OpenGL/OpenGLContext.h"
-
-#include "WindowsWindow.h"
 
 namespace Jungle
 {

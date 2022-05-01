@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Log.h"
+#include "Jungle/Core/Log.h"
 
 #ifdef JNGL_ENABLE_ASSERTS
 #define JNGL_ASSERT(x, ...) { if(!(x)) { JNGL_LOG_ERROR("Assertion Failed: {0}.", __VA_ARGS__); __debugbreak(); } }

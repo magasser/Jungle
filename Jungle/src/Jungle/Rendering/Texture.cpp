@@ -1,7 +1,7 @@
 #include "jnglpch.h"
 #include "Texture.h"
 
-#include "Renderer.h"
+#include "Jungle/Rendering/Renderer.h"
 #include "Platform/OpenGL/OpenGLTexture.h"
 
 namespace Jungle

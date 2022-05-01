@@ -1,7 +1,5 @@
 #pragma once
 
-#include <string>
-
 #include "Jungle/Core/Core.h"
 
 namespace Jungle

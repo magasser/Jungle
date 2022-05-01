@@ -4,8 +4,8 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "Jungle/Core/Verification.h"
-#include "Renderer.h"
-#include "Shader.h"
+#include "Jungle/Rendering/Renderer.h"
+#include "Jungle/Rendering/Shader.h"
 #include "Platform/OpenGL/OpenGLShader.h"
 
 
