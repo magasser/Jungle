@@ -2,7 +2,7 @@ include "premake/solution_items.lua"
 
 workspace "Jungle"
 	architecture "x64"
-	configurations { "Debug", "Release", "Dist" }
+	configurations { "Debug", "Profile", "Release", "Dist" }
 
 	workspace_files
 	{
@@ -90,13 +90,24 @@ project "Jungle"
 		}
 
 	filter "configurations:Debug"
-		defines "JNGL_CFG_DEBUG"
 		buildoptions "/MDd"
 		symbols "on"
 
 		defines
 		{
+			"JNGL_CFG_DEBUG",
 			"JNGL_ENABLE_ASSERTS"
+		}
+
+	filter "configurations:Profie"
+		buildoptions "/MDd"
+		symbols "on"
+
+		defines
+		{
+			"JNGL_CFG_DEBUG",
+			"JNGL_ENABLE_ASSERTS",
+			"JNGL_ENABLE_PROFILING"
 		}
 
 	filter "configurations:Release"
@@ -149,6 +160,11 @@ project "Sandbox"
 
 	filter "configurations:Debug"
 		defines "JNGL_CFG_DEBUG"
+		buildoptions "/MDd"
+		symbols "on"
+
+	filter "configurations:Profile"
+		defines "JNGL_CFG_PROFILE"
 		buildoptions "/MDd"
 		symbols "on"
 

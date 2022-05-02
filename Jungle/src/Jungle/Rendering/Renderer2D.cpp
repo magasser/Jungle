@@ -53,7 +53,6 @@ namespace Jungle
 		s_Data->TextureShader = Shader::Create("assets/shaders/Texture.glsl");
 		s_Data->TextureShader->Bind();
 		s_Data->TextureShader->SetInt("u_Texture", 0);
-		s_Data->TextureShader->SetFloat("u_TexScale", 5.0f);
 	}
 
 	void Renderer2D::Shutdown()
@@ -86,6 +85,7 @@ namespace Jungle
 		JNGL_PROFILE_FUNCTION();
 
 		s_Data->TextureShader->SetFloat4("u_Color", color);
+		s_Data->TextureShader->SetFloat("u_TilingFactor", 1.0f);
 		s_Data->WhiteTexture->Bind();
 
 		static const glm::mat4 base(1.0f);
@@ -95,17 +95,18 @@ namespace Jungle
 		s_Data->QuadVertexArray->Bind();
 		RenderCommand::DrawIndexed(s_Data->QuadVertexArray);
 	}
-	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture2D>& texture)
+	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture2D>& texture, float tilingFactor)
 	{
 		DrawQuad({ position.x, position.y, 0.0f }, size, texture);
 	}
 
-	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D>& texture)
+	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D>& texture, float tilingFactor)
 	{
 		JNGL_PROFILE_FUNCTION();
 
 		static glm::vec4 whiteColor(1.0f);
 		s_Data->TextureShader->SetFloat4("u_Color", whiteColor);
+		s_Data->TextureShader->SetFloat("u_TilingFactor", tilingFactor);
 		texture->Bind();
 
 		static const glm::mat4 base(1.0f);
