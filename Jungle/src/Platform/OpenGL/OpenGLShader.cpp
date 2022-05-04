@@ -215,6 +215,13 @@ namespace Jungle
 		UploadUniformInt(name, value);
 	}
 
+	void OpenGLShader::SetIntArray(const std::string& name, int* values, uint32_t count)
+	{
+		JNGL_PROFILE_FUNCTION();
+
+		UploadUniformIntArray(name, values, count);
+	}
+
 	void OpenGLShader::SetFloat(const std::string& name, float value)
 	{
 		JNGL_PROFILE_FUNCTION();
@@ -250,6 +257,15 @@ namespace Jungle
 		JNGL_CORE_ASSERT(location >= 0, "Failed to get uniform location.");
 
 		glUniform1i(location, i);
+	}
+
+	void OpenGLShader::UploadUniformIntArray(const std::string& name, int* values, uint32_t count) const
+	{
+		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+
+		JNGL_CORE_ASSERT(location >= 0, "Failed to get uniform location.");
+
+		glUniform1iv(location, count, values);
 	}
 
 	void OpenGLShader::UploadUniformFloat(const std::string& name, float f) const

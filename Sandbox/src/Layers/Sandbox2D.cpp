@@ -42,9 +42,15 @@ namespace Sandbox
 			JNGL_PROFILE_SCOPE("Sandbox2D Rendering");
 			Jungle::Renderer2D::BeginScene(m_CameraController.GetCamera());
 
+			static float rotation = 0.0f;
+			rotation += timestep * 10.0f;
+
 			Jungle::Renderer2D::DrawQuad({ -1.0f, 0.0f }, { 0.8f, 0.8f }, { 0.7f, 0.2f, 0.3f, 1.0f });
-			Jungle::Renderer2D::DrawQuad({ 0.5f, -0.5f }, { 0.5f, 0.75f }, { 0.3f, 0.2f, 0.7f, 1.0f });
-			Jungle::Renderer2D::DrawQuad({ 0.2f, 0.5f, -0.1f }, { 10.0f, 10.0f }, m_CheckerboardTexture);
+			Jungle::Renderer2D::DrawRotatedQuad({ 0.5f, -0.5f }, { 0.5f, 0.75f }, -20.0f, { 0.3f, 0.2f, 0.7f, 1.0f });
+			Jungle::Renderer2D::DrawQuad({ 0.0f, 0.0f, -0.2f }, { 10.0f, 10.0f }, m_CheckerboardTexture, 2.0f, { 0.7f, 1.0f, 0.8f, 1.0f });
+			Jungle::Renderer2D::DrawRotatedQuad({ 0.0f, 0.0f, -0.1f }, { 5.0f, 5.0f }, -rotation, m_CheckerboardTexture, 4.0f, { 0.7f, 0.8f, 1.0f, 1.0f });
+			Jungle::Renderer2D::DrawRotatedQuad({ 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f }, rotation, m_CheckerboardTexture, 8.0f, { 1.0f, 0.7f, 0.8f, 1.0f });
+
 
 			Jungle::Renderer2D::EndScene();
 		}
