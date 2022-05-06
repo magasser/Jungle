@@ -23,6 +23,7 @@ namespace Sandbox
 		Jungle::Ref<Jungle::Shader> m_FlatColorShader;
 
 		Jungle::Ref<Jungle::Texture2D> m_CheckerboardTexture;
+		Jungle::Ref<Jungle::Texture2D> m_SpriteSheet;
 
 		glm::vec4 m_SquareColor = { 0.2f, 0.8f, 0.3f, 1.0f };
 	};

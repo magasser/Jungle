@@ -20,9 +20,9 @@ namespace Jungle
 
 	struct Renderer2DData
 	{
-		const uint32_t MaxQuads = 10000;
-		const uint32_t MaxVertices = MaxQuads * 4;
-		const uint32_t MaxIndices = MaxQuads * 6;
+		static const uint32_t MaxQuads = 10000;
+		static const uint32_t MaxVertices = MaxQuads * 4;
+		static const uint32_t MaxIndices = MaxQuads * 6;
 		static const uint32_t MaxTextureSlots = 32;
 
 		Ref<VertexArray> QuadVertexArray;
@@ -54,8 +54,8 @@ namespace Jungle
 			{ ShaderDataType::Float3, "a_Position" },
 			{ ShaderDataType::Float4, "a_Color" },
 			{ ShaderDataType::Float2, "a_TexCoord" },
-			{ ShaderDataType::Float, "a_TexIndex" },
-			{ ShaderDataType::Float, "a_TilingFactor" },
+			{ ShaderDataType::Float,  "a_TexIndex" },
+			{ ShaderDataType::Float,  "a_TilingFactor" },
 		});
 		s_Data.QuadVertexArray->AddVertexBuffer(s_Data.QuadVertexBuffer);
 
@@ -97,10 +97,10 @@ namespace Jungle
 
 		s_Data.TextureSlots[0] = s_Data.WhiteTexture;
 
-		s_Data.QuadVertexPositions[0] = { -0.5f , -0.5, 0.0f, 1.0f };
-		s_Data.QuadVertexPositions[1] = {  0.5f , -0.5, 0.0f, 1.0f };
-		s_Data.QuadVertexPositions[2] = {  0.5f ,  0.5, 0.0f, 1.0f };
-		s_Data.QuadVertexPositions[3] = { -0.5f ,  0.5, 0.0f, 1.0f };
+		s_Data.QuadVertexPositions[0] = { -0.5f , -0.5f, 0.0f, 1.0f };
+		s_Data.QuadVertexPositions[1] = {  0.5f , -0.5f, 0.0f, 1.0f };
+		s_Data.QuadVertexPositions[2] = {  0.5f ,  0.5f, 0.0f, 1.0f };
+		s_Data.QuadVertexPositions[3] = { -0.5f ,  0.5f, 0.0f, 1.0f };
 	}
 
 	void Renderer2D::Shutdown()
@@ -114,12 +114,9 @@ namespace Jungle
 	{
 		JNGL_PROFILE_FUNCTION();
 
-		s_Data.TextureShader->Bind();
 		s_Data.TextureShader->SetMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
 
-		s_Data.QuadIndexCount = 0;
-		s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
-		s_Data.TextureSlotIndex = 1;
+		StartBatch();
 	}
 
 	void Renderer2D::EndScene()
@@ -127,6 +124,24 @@ namespace Jungle
 		JNGL_PROFILE_FUNCTION();
 
 		Flush();
+	}
+
+	void Renderer2D::StartBatch()
+	{
+		JNGL_PROFILE_FUNCTION();
+
+		s_Data.QuadIndexCount = 0;
+		s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
+		s_Data.TextureSlotIndex = 1;
+	}
+
+	void Renderer2D::NextBatch()
+	{
+		JNGL_PROFILE_FUNCTION();
+
+		Flush();
+
+		StartBatch();
 	}
 
 	void Renderer2D::Flush()
@@ -148,6 +163,8 @@ namespace Jungle
 
 		s_Data.TextureShader->Bind();
 		RenderCommand::DrawIndexed(s_Data.QuadVertexArray, s_Data.QuadIndexCount);
+
+		s_Data.Stats.DrawCalls++;
 	}
 
 	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color)
@@ -167,6 +184,12 @@ namespace Jungle
 
 		constexpr glm::mat4 base(1.0f);
 		constexpr glm::vec3 axis(0.0f, 0.0f, 1.0f);
+
+		if (s_Data.QuadIndexCount >= Renderer2DData::MaxIndices)
+		{
+			NextBatch();
+		}
+
 		glm::mat4 transform = glm::translate(base, position) * glm::scale(base, { size.x, size.y, 1.0f });
 
 		for (uint32_t i = 0; i < quadVertexCount; i++)
@@ -194,6 +217,13 @@ namespace Jungle
 
 		constexpr uint32_t quadVertexCount = 4;
 		constexpr glm::vec2 textureCoords[] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
+		constexpr glm::mat4 base(1.0f);
+		constexpr glm::vec3 axis(0.0f, 0.0f, 1.0f);
+
+		if (s_Data.QuadIndexCount >= Renderer2DData::MaxIndices)
+		{
+			NextBatch();
+		}
 
 		float textureIndex = 0.0f;
 		for (uint32_t i = 1; i < s_Data.TextureSlotIndex; i++)
@@ -212,8 +242,6 @@ namespace Jungle
 			s_Data.TextureSlotIndex++;
 		}
 
-		constexpr glm::mat4 base(1.0f);
-		constexpr glm::vec3 axis(0.0f, 0.0f, 1.0f);
 		glm::mat4 transform = glm::translate(base, position) * glm::scale(base, { size.x, size.y, 1.0f });
 
 		for (uint32_t i = 0; i < quadVertexCount; i++)
@@ -244,10 +272,15 @@ namespace Jungle
 		constexpr glm::vec2 textureCoords[] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
 		constexpr float whiteTextureIndex = 0.0f;
 		constexpr float tilingFactor = 1.0f;
-
 		constexpr glm::mat4 base(1.0f);
 		constexpr glm::vec3 axis(0.0f, 0.0f, 1.0f);
-		glm::mat4 transform = glm::translate(base, position) * glm::rotate(base, glm::radians(angle), axis) * glm::scale(base, { size.x, size.y, 1.0f });
+
+		if (s_Data.QuadIndexCount >= Renderer2DData::MaxIndices)
+		{
+			NextBatch();
+		}
+
+		glm::mat4 transform = glm::translate(base, position) * glm::rotate(base, angle, axis) * glm::scale(base, { size.x, size.y, 1.0f });
 
 		for (uint32_t i = 0; i < quadVertexCount; i++)
 		{
@@ -275,6 +308,13 @@ namespace Jungle
 
 		constexpr uint32_t quadVertexCount = 4;
 		constexpr glm::vec2 textureCoords[] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
+		constexpr glm::mat4 base(1.0f);
+		constexpr glm::vec3 axis(0.0f, 0.0f, 1.0f);
+
+		if (s_Data.QuadIndexCount >= Renderer2DData::MaxIndices)
+		{
+			NextBatch();
+		}
 
 		float textureIndex = 0.0f;
 		for (uint32_t i = 1; i < s_Data.TextureSlotIndex; i++)
@@ -293,9 +333,7 @@ namespace Jungle
 			s_Data.TextureSlotIndex++;
 		}
 
-		constexpr glm::mat4 base(1.0f);
-		constexpr glm::vec3 axis(0.0f, 0.0f, 1.0f);
-		glm::mat4 transform = glm::translate(base, position) * glm::rotate(base, glm::radians(angle), axis) * glm::scale(base, {size.x, size.y, 1.0f});
+		glm::mat4 transform = glm::translate(base, position) * glm::rotate(base, angle, axis) * glm::scale(base, {size.x, size.y, 1.0f});
 
 		for (uint32_t i = 0; i < quadVertexCount; i++)
 		{

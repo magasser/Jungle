@@ -33,12 +33,15 @@ namespace Jungle
 			uint32_t DrawCalls = 0;
 			uint32_t QuadCount = 0;
 
-			uint32_t GetVertexCount() { return QuadCount * 4; }
-			uint32_t GetIndexCount() { return QuadCount * 6; }
+			uint32_t GetVertexCount() const { return QuadCount * 4; }
+			uint32_t GetIndexCount() const { return QuadCount * 6; }
 		};
-		static void ResetStats();
-		const Statistics& GetStats();
+		static void ResetStatistics();
+		static const Statistics& GetStatistics();
 
+	private:
+		static void StartBatch();
+		static void NextBatch();
 	};
 }
 

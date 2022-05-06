@@ -43,7 +43,7 @@ namespace Jungle
 		float m_ZoomLevel = 1.0f;
 		float m_ZoomSpeed = 0.25f;
 		float m_MinZoomLevel = 0.25f;
-		float m_MaxZoomLevel = 5.0f;
+		float m_MaxZoomLevel = 10.0f;
 	};
 
 	class JUNGLE_API OrthographicCameraController : public CameraController
