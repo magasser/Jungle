@@ -9,6 +9,16 @@
 
 namespace Jungle
 {
+	constexpr uint32_t QuadVertexCount = 4;
+	constexpr glm::vec2 DefaultTextureCoords[] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
+	constexpr float WhiteTextureIndex = 0.0f;
+	constexpr float DefaultTilingFactor = 1.0f;
+	constexpr glm::mat4 BaseMatrix(1.0f);
+	constexpr glm::vec3 ZAxis(0.0f, 0.0f, 1.0f);
+
+	inline float FindTextureIndex(const Ref<Texture2D>& texture);
+	inline void SetBuffer(const glm::mat4& transform, const glm::vec4& color, const glm::vec2* textureCoords, float textureIndex, float tilingFactor);
+
 	struct QuadVertex
 	{
 		glm::vec3 Position;
@@ -176,36 +186,18 @@ namespace Jungle
 	{
 		JNGL_PROFILE_FUNCTION();
 
-		constexpr uint32_t quadVertexCount = 4;
-		constexpr float whiteTextureIndex = 0.0f;
-		constexpr float tilingFactor = 1.0f;
-
-		constexpr glm::vec2 textureCoords[] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
-
-		constexpr glm::mat4 base(1.0f);
-		constexpr glm::vec3 axis(0.0f, 0.0f, 1.0f);
-
 		if (s_Data.QuadIndexCount >= Renderer2DData::MaxIndices)
 		{
 			NextBatch();
 		}
 
-		glm::mat4 transform = glm::translate(base, position) * glm::scale(base, { size.x, size.y, 1.0f });
+		const glm::mat4 transform = glm::translate(BaseMatrix, position) * glm::scale(BaseMatrix, { size.x, size.y, 1.0f });
 
-		for (uint32_t i = 0; i < quadVertexCount; i++)
-		{
-			s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadVertexPositions[i];
-			s_Data.QuadVertexBufferPtr->Color = color;
-			s_Data.QuadVertexBufferPtr->TexCoord = textureCoords[i];
-			s_Data.QuadVertexBufferPtr->TexIndex = whiteTextureIndex;
-			s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
-			s_Data.QuadVertexBufferPtr++;
-		}
-
-		s_Data.QuadIndexCount += 6;
+		SetBuffer(transform, color, DefaultTextureCoords, WhiteTextureIndex, DefaultTilingFactor);
 
 		s_Data.Stats.QuadCount++;
 	}
+
 	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor)
 	{
 		DrawQuad({ position.x, position.y, 0.0f }, size, texture, tilingFactor, tintColor);
@@ -215,46 +207,39 @@ namespace Jungle
 	{
 		JNGL_PROFILE_FUNCTION();
 
-		constexpr uint32_t quadVertexCount = 4;
-		constexpr glm::vec2 textureCoords[] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
-		constexpr glm::mat4 base(1.0f);
-		constexpr glm::vec3 axis(0.0f, 0.0f, 1.0f);
+		if (s_Data.QuadIndexCount >= Renderer2DData::MaxIndices)
+		{
+			NextBatch();
+		}
+
+		const float textureIndex = FindTextureIndex(texture);
+
+		const glm::mat4 transform = glm::translate(BaseMatrix, position) * glm::scale(BaseMatrix, { size.x, size.y, 1.0f });
+
+		SetBuffer(transform, tintColor, DefaultTextureCoords, textureIndex, tilingFactor);
+
+		s_Data.Stats.QuadCount++;
+	}
+
+	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<SubTexture2D>& subTexture, float tilingFactor, const glm::vec4& tintColor)
+	{
+		DrawQuad({ position.x, position.y, 0.0f }, size, subTexture, tilingFactor, tintColor);
+	}
+
+	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<SubTexture2D>& subTexture, float tilingFactor, const glm::vec4& tintColor)
+	{
+		JNGL_PROFILE_FUNCTION();
 
 		if (s_Data.QuadIndexCount >= Renderer2DData::MaxIndices)
 		{
 			NextBatch();
 		}
 
-		float textureIndex = 0.0f;
-		for (uint32_t i = 1; i < s_Data.TextureSlotIndex; i++)
-		{
-			if (*s_Data.TextureSlots[i] == *texture)
-			{
-				textureIndex = (float)i;
-				break;
-			}
-		}
+		const float textureIndex = FindTextureIndex(subTexture->GetTexture());
 
-		if (textureIndex == 0.0f)
-		{
-			textureIndex = (float)s_Data.TextureSlotIndex;
-			s_Data.TextureSlots[s_Data.TextureSlotIndex] = texture;
-			s_Data.TextureSlotIndex++;
-		}
+		const glm::mat4 transform = glm::translate(BaseMatrix, position) * glm::scale(BaseMatrix, { size.x, size.y, 1.0f });
 
-		glm::mat4 transform = glm::translate(base, position) * glm::scale(base, { size.x, size.y, 1.0f });
-
-		for (uint32_t i = 0; i < quadVertexCount; i++)
-		{
-			s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadVertexPositions[i];
-			s_Data.QuadVertexBufferPtr->Color = tintColor;
-			s_Data.QuadVertexBufferPtr->TexCoord = textureCoords[i];
-			s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
-			s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
-			s_Data.QuadVertexBufferPtr++;
-		}
-
-		s_Data.QuadIndexCount += 6;
+		SetBuffer(transform, tintColor, subTexture->GetTextureCoords(), textureIndex, tilingFactor);
 
 		s_Data.Stats.QuadCount++;
 	}
@@ -268,31 +253,14 @@ namespace Jungle
 	{
 		JNGL_PROFILE_FUNCTION();
 
-		constexpr uint32_t quadVertexCount = 4;
-		constexpr glm::vec2 textureCoords[] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
-		constexpr float whiteTextureIndex = 0.0f;
-		constexpr float tilingFactor = 1.0f;
-		constexpr glm::mat4 base(1.0f);
-		constexpr glm::vec3 axis(0.0f, 0.0f, 1.0f);
-
 		if (s_Data.QuadIndexCount >= Renderer2DData::MaxIndices)
 		{
 			NextBatch();
 		}
 
-		glm::mat4 transform = glm::translate(base, position) * glm::rotate(base, angle, axis) * glm::scale(base, { size.x, size.y, 1.0f });
+		const glm::mat4 transform = glm::translate(BaseMatrix, position) * glm::rotate(BaseMatrix, angle, ZAxis) * glm::scale(BaseMatrix, { size.x, size.y, 1.0f });
 
-		for (uint32_t i = 0; i < quadVertexCount; i++)
-		{
-			s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadVertexPositions[i];
-			s_Data.QuadVertexBufferPtr->Color = color;
-			s_Data.QuadVertexBufferPtr->TexCoord = textureCoords[i];
-			s_Data.QuadVertexBufferPtr->TexIndex = whiteTextureIndex;
-			s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
-			s_Data.QuadVertexBufferPtr++;
-		}
-
-		s_Data.QuadIndexCount += 6;
+		SetBuffer(transform, color, DefaultTextureCoords, WhiteTextureIndex, DefaultTilingFactor);
 
 		s_Data.Stats.QuadCount++;
 	}
@@ -306,16 +274,45 @@ namespace Jungle
 	{
 		JNGL_PROFILE_FUNCTION();
 
-		constexpr uint32_t quadVertexCount = 4;
-		constexpr glm::vec2 textureCoords[] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
-		constexpr glm::mat4 base(1.0f);
-		constexpr glm::vec3 axis(0.0f, 0.0f, 1.0f);
+		if (s_Data.QuadIndexCount >= Renderer2DData::MaxIndices)
+		{
+			NextBatch();
+		}
+
+		const float textureIndex = FindTextureIndex(texture);
+
+		const glm::mat4 transform = glm::translate(BaseMatrix, position) * glm::rotate(BaseMatrix, angle, ZAxis) * glm::scale(BaseMatrix, {size.x, size.y, 1.0f});
+
+		SetBuffer(transform, tintColor, DefaultTextureCoords, textureIndex, tilingFactor);
+
+		s_Data.Stats.QuadCount++;
+	}
+
+	void Renderer2D::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, float angle, const Ref<SubTexture2D>& subTexture, float tilingFactor, const glm::vec4& tintColor)
+	{
+		DrawRotatedQuad({ position.x, position.y, 0.0f }, size, angle, subTexture, tilingFactor, tintColor);
+	}
+
+	void Renderer2D::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, float angle, const Ref<SubTexture2D>& subTexture, float tilingFactor, const glm::vec4& tintColor)
+	{
+		JNGL_PROFILE_FUNCTION();
 
 		if (s_Data.QuadIndexCount >= Renderer2DData::MaxIndices)
 		{
 			NextBatch();
 		}
 
+		const float textureIndex = FindTextureIndex(subTexture->GetTexture());
+
+		const glm::mat4 transform = glm::translate(BaseMatrix, position) * glm::rotate(BaseMatrix, angle, ZAxis) * glm::scale(BaseMatrix, { size.x, size.y, 1.0f });
+
+		SetBuffer(transform, tintColor, subTexture->GetTextureCoords(), textureIndex, tilingFactor);
+
+		s_Data.Stats.QuadCount++;
+	}
+
+	inline float FindTextureIndex(const Ref<Texture2D>& texture)
+	{
 		float textureIndex = 0.0f;
 		for (uint32_t i = 1; i < s_Data.TextureSlotIndex; i++)
 		{
@@ -333,12 +330,15 @@ namespace Jungle
 			s_Data.TextureSlotIndex++;
 		}
 
-		glm::mat4 transform = glm::translate(base, position) * glm::rotate(base, angle, axis) * glm::scale(base, {size.x, size.y, 1.0f});
+		return textureIndex;
+	}
 
-		for (uint32_t i = 0; i < quadVertexCount; i++)
+	inline void SetBuffer(const glm::mat4& transform, const glm::vec4& color, const glm::vec2* textureCoords, float textureIndex, float tilingFactor)
+	{
+		for (uint32_t i = 0; i < QuadVertexCount; i++)
 		{
 			s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadVertexPositions[i];
-			s_Data.QuadVertexBufferPtr->Color = tintColor;
+			s_Data.QuadVertexBufferPtr->Color = color;
 			s_Data.QuadVertexBufferPtr->TexCoord = textureCoords[i];
 			s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
 			s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
@@ -346,8 +346,6 @@ namespace Jungle
 		}
 
 		s_Data.QuadIndexCount += 6;
-
-		s_Data.Stats.QuadCount++;
 	}
 
 	void Renderer2D::ResetStatistics()

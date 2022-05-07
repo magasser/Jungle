@@ -23,9 +23,14 @@ namespace Sandbox
 		Jungle::Ref<Jungle::Shader> m_FlatColorShader;
 
 		Jungle::Ref<Jungle::Texture2D> m_CheckerboardTexture;
-		Jungle::Ref<Jungle::Texture2D> m_SpriteSheet;
+		Jungle::Ref<Jungle::TextureAtlas2D> m_TextureAtlas;
+
+		Jungle::Ref<Jungle::SubTexture2D> m_TextureStairs, m_TextureTree;
 
 		glm::vec4 m_SquareColor = { 0.2f, 0.8f, 0.3f, 1.0f };
+
+		uint32_t m_MapWidth, m_MapHeight;
+		std::unordered_map<char, Jungle::Ref<Jungle::SubTexture2D>> m_TextureMap;
 	};
 }
 

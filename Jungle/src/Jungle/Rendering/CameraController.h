@@ -26,7 +26,7 @@ namespace Jungle
 		void SetRotationSpeed(float speed) { m_RotationSpeed = speed; }
 		float GetTranslationSpeed() { return m_TranslationSpeed; }
 
-		void SetZoomLevel(float zoomLevel) { m_ZoomLevel = std::clamp(zoomLevel, m_MinZoomLevel, m_MaxZoomLevel); }
+		void SetZoomLevel(float zoomLevel) { m_ZoomLevel = std::clamp(zoomLevel, m_MinZoomLevel, m_MaxZoomLevel); CalculateView(); SetTranslationSpeed(m_ZoomLevel); }
 		void SetZoomSpeed(float zoomSpeed) { m_ZoomSpeed = zoomSpeed; }
 		void SetMinZoomLevel(float zoomLevel) { m_MinZoomLevel = zoomLevel; }
 		void SetMaxZoomLevel(float zoomLevel) { m_MaxZoomLevel = zoomLevel; }
@@ -34,6 +34,9 @@ namespace Jungle
 		float GetZoomSpeed() { return m_ZoomSpeed; }
 		float GetMinZoomLevel() { return m_MinZoomLevel; }
 		float GetMaxZoomLevel() { return m_MaxZoomLevel; }
+
+	protected:
+		virtual void CalculateView() = 0;
 
 	protected:
 		glm::vec3 m_Position = { 0.0f, 0.0f, 0.0f };
@@ -56,6 +59,9 @@ namespace Jungle
 
 		void OnUpdate(Timestep timestep);
 		void OnEvent(Event& e);
+
+	protected:
+		virtual void CalculateView() override;
 
 	private:
 		bool OnMouseScrolled(MouseScrolledEvent& e);

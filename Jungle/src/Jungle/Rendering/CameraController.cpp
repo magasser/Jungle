@@ -70,12 +70,19 @@ namespace Jungle
 		dispatcher.Dispatch<WindowResizeEvent>(JNGL_BIND_EVENT_FN(OrthographicCameraController::OnWindowResized));
 	}
 
+	void OrthographicCameraController::CalculateView()
+	{
+		JNGL_PROFILE_FUNCTION();
+
+		m_Camera.SetProjectionMatrix(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
+	}
+
 	bool OrthographicCameraController::OnMouseScrolled(MouseScrolledEvent& e)
 	{
 		JNGL_PROFILE_FUNCTION();
 
 		SetZoomLevel(m_ZoomLevel - e.GetYOffest() * m_ZoomSpeed);
-		m_Camera.SetProjectionMatrix(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
+		CalculateView();
 
 		return false;
 	}
@@ -85,7 +92,7 @@ namespace Jungle
 		JNGL_PROFILE_FUNCTION();
 
 		m_AspectRatio = (float)e.GetWidth() / (float)e.GetHeight();
-		m_Camera.SetProjectionMatrix(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
+		CalculateView();
 
 		return false;
 	}

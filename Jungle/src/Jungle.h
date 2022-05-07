@@ -23,6 +23,7 @@
 
 // Rendering
 #include "Jungle/Rendering/Buffer.h"
+#include "Jungle/Rendering/VertexArray.h"
 #include "Jungle/Rendering/GraphicsContext.h"
 #include "Jungle/Rendering/Renderer.h"
 #include "Jungle/Rendering/Renderer2D.h"
@@ -30,7 +31,7 @@
 #include "Jungle/Rendering/RendererAPI.h"
 #include "Jungle/Rendering/Shader.h"
 #include "Jungle/Rendering/Texture.h"
-#include "Jungle/Rendering/VertexArray.h"
+#include "Jungle/Rendering/TextureAtlas.h"
 
 // Camera
 #include "Jungle/Rendering/Camera.h"
