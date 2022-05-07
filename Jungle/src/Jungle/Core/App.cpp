@@ -75,6 +75,11 @@ namespace Jungle
 		}
 	}
 
+	void App::Close()
+	{
+		m_Running = false;
+	}
+
 	void App::OnEvent(Event& e)
 	{
 		JNGL_PROFILE_FUNCTION();
@@ -87,11 +92,11 @@ namespace Jungle
 
 		for (auto it = m_LayerStack.end(); it != m_LayerStack.begin(); )
 		{
-			(*--it)->OnEvent(e);
 			if (e.Handled)
 			{
 				break;
 			}
+			(*--it)->OnEvent(e);
 		}
 	}
 

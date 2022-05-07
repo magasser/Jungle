@@ -14,7 +14,7 @@ namespace Sandbox
 {
 	SandboxApp::SandboxApp()
 	{
-		//PushLayer(new ExampleLayer());
-		PushLayer(new Sandbox2D());
+		PushLayer(new ExampleLayer());
+		//PushLayer(new Sandbox2D());
 	}
 }

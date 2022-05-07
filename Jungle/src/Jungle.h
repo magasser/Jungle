@@ -23,6 +23,7 @@
 
 // Rendering
 #include "Jungle/Rendering/Buffer.h"
+#include "Jungle/Rendering/Framebuffer.h"
 #include "Jungle/Rendering/VertexArray.h"
 #include "Jungle/Rendering/GraphicsContext.h"
 #include "Jungle/Rendering/Renderer.h"

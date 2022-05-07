@@ -10,16 +10,15 @@ namespace Sandbox
 		ExampleLayer();
 		~ExampleLayer();
 
+		virtual void OnAttach() override;
+		virtual void OnDetach() override;
 		virtual void OnUpdate(Jungle::Timestep timestep) override;
-		virtual void OnImGuiRender() override;
 		virtual void OnEvent(Jungle::Event& e) override;
+		virtual void OnImGuiRender() override;
 
 	private:
-		Jungle::ShaderLibrary m_ShaderLibrary;
-		Jungle::Ref<Jungle::VertexArray> m_VertexArray;
-
-		Jungle::Ref<Jungle::Texture2D> m_Texture, m_LogoTexture;
-		Jungle::Ref<Jungle::VertexArray> m_SquareVA;
+		Jungle::Ref<Jungle::Texture2D> m_LogoTexture, m_CheckerboardTexture;
+		Jungle::Ref<Jungle::Framebuffer> m_Framebuffer;
 
 		Jungle::OrthographicCameraController m_CameraController;
 
