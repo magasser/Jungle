@@ -11,7 +11,7 @@ namespace Jungle
 {
 	App* App::s_Instance = nullptr;
 
-	App::App()
+	App::App(const std::string& name)
 	{
 		JNGL_PROFILE_FUNCTION();
 
@@ -19,7 +19,7 @@ namespace Jungle
 
 		s_Instance = this;
 
-		m_Window = Window::Create();
+		m_Window = Window::Create(WindowProps(name));
 		m_Window->SetEventCallback(JNGL_BIND_EVENT_FN(App::OnEvent));
 
 		Renderer::Init();
@@ -90,13 +90,13 @@ namespace Jungle
 
 		auto [x, y] = Input::GetMousePosition();
 
-		for (auto it = m_LayerStack.end(); it != m_LayerStack.begin(); )
+		for (auto it = m_LayerStack.rbegin(); it != m_LayerStack.rend(); it++)
 		{
 			if (e.Handled)
 			{
 				break;
 			}
-			(*--it)->OnEvent(e);
+			(*it)->OnEvent(e);
 		}
 	}
 

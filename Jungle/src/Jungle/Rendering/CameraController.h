@@ -17,6 +17,8 @@ namespace Jungle
 		virtual Camera& GetCamera() = 0;
 		virtual const Camera& GetCamera() const = 0;
 
+		virtual void Resize(float width, float height) = 0;
+
 		void SetPosition(const glm::vec3& position) { m_Position = position; GetCamera().SetPosition(position); }
 		const glm::vec3& GetPosition() { return m_Position; }
 
@@ -54,11 +56,14 @@ namespace Jungle
 	public:
 		OrthographicCameraController(float apectRatio, bool canRotate = false);
 
+		virtual void OnUpdate(Timestep timestep);
+		virtual void OnEvent(Event& e);
+
 		virtual OrthographicCamera& GetCamera() override;
 		virtual const OrthographicCamera& GetCamera() const override;
 
-		void OnUpdate(Timestep timestep);
-		void OnEvent(Event& e);
+		virtual void Resize(float width, float height) override;
+
 
 	protected:
 		virtual void CalculateView() override;

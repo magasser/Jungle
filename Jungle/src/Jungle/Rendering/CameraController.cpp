@@ -23,34 +23,42 @@ namespace Jungle
 		return m_Camera;
 	}
 
+	void OrthographicCameraController::Resize(float width, float height)
+	{
+		JNGL_PROFILE_FUNCTION();
+
+		m_AspectRatio = width / height;
+		CalculateView();
+	}
+
 	void OrthographicCameraController::OnUpdate(Timestep timestep)
 	{
 		JNGL_PROFILE_FUNCTION();
 
-		if (Input::IsKeyPressed(JNGL_KEY_A))
+		if (Input::IsKeyPressed(Key::A))
 		{
 			m_Position.x -= m_TranslationSpeed * timestep;
 		}
-		else if (Input::IsKeyPressed(JNGL_KEY_D))
+		else if (Input::IsKeyPressed(Key::D))
 		{
 			m_Position.x += m_TranslationSpeed * timestep;
 		}
-		if (Input::IsKeyPressed(JNGL_KEY_W))
+		if (Input::IsKeyPressed(Key::W))
 		{
 			m_Position.y += m_TranslationSpeed * timestep;
 		}
-		else if (Input::IsKeyPressed(JNGL_KEY_S))
+		else if (Input::IsKeyPressed(Key::S))
 		{
 			m_Position.y -= m_TranslationSpeed * timestep;
 		}
 
 		if (m_CanRotate)
 		{
-			if (Input::IsKeyPressed(JNGL_KEY_Q))
+			if (Input::IsKeyPressed(Key::Q))
 			{
 				m_Rotation += m_RotationSpeed * timestep;
 			}
-			else if (Input::IsKeyPressed(JNGL_KEY_E))
+			else if (Input::IsKeyPressed(Key::E))
 			{
 				m_Rotation -= m_RotationSpeed * timestep;
 			}
@@ -91,7 +99,7 @@ namespace Jungle
 	{
 		JNGL_PROFILE_FUNCTION();
 
-		m_AspectRatio = (float)e.GetWidth() / (float)e.GetHeight();
+		Resize((float)e.GetWidth(), (float)e.GetHeight());
 		CalculateView();
 
 		return false;

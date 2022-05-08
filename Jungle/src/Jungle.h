@@ -13,7 +13,7 @@
 // Input
 #include "Jungle/Core/Input.h"
 #include "Jungle/Core/KeyCodes.h"
-#include "Jungle/Core/MouseButtonCodes.h"
+#include "Jungle/Core/MouseCodes.h"
 
 // Events
 #include "Jungle/Events/Event.h"

@@ -13,7 +13,7 @@ namespace Jungle
 	class JUNGLE_API App
 	{
 	public:
-		App();
+		App(const std::string& name = "Jungle Engine");
 		virtual ~App();
 
 		void Run();
@@ -24,6 +24,8 @@ namespace Jungle
 
 		void PushLayer(Layer* layer);
 		void PushOverlay(Layer* overlay);
+
+		ImGuiLayer* GetImGuiLayer() { return m_ImGuiLayer; }
 
 		inline Window& GetWindow() { return *m_Window; }
 

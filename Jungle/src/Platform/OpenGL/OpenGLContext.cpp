@@ -15,6 +15,11 @@ namespace Jungle
 		JNGL_CORE_ASSERT(windowHandle, "Window handle is null.");
 	}
 
+	OpenGLContext::~OpenGLContext()
+	{
+		glfwMakeContextCurrent(nullptr);
+	}
+
 	void OpenGLContext::Init()
 	{
 		JNGL_PROFILE_FUNCTION();

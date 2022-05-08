@@ -17,6 +17,8 @@ namespace Jungle
 		};
 
 	public:
+		virtual ~RendererAPI() = default;
+
 		virtual void Init() = 0;
 
 		virtual void Clear(const glm::vec4& color) = 0;

@@ -10,7 +10,7 @@ namespace Jungle
 	{
 	public:
 		OpenGLContext(GLFWwindow* windowHandle);
-		~OpenGLContext();
+		virtual ~OpenGLContext();
 
 		virtual void Init() override;
 		virtual void SwapBuffers() override;
