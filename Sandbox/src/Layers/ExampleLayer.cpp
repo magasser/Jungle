@@ -61,8 +61,6 @@ namespace Sandbox
 			}
 		}
 		Jungle::Renderer2D::EndScene();
-
-		m_Framebuffer->Unbind();
 	}
 
 	void ExampleLayer::OnEvent(Jungle::Event& e)

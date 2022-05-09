@@ -34,6 +34,11 @@
 #include "Jungle/Rendering/Texture.h"
 #include "Jungle/Rendering/TextureAtlas.h"
 
+// Scene
+#include "Jungle/Scene/Scene.h"
+#include "Jungle/Scene/Entity.h"
+#include "Jungle/Scene/Components.h"
+
 // Camera
 #include "Jungle/Rendering/Camera.h"
 #include "Jungle/Rendering/CameraController.h"

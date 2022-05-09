@@ -1,12 +1,25 @@
 #pragma once
 
-#include "../../GLM/glm/glm.hpp"
+#include <glm/glm.hpp>
 
 #include "Jungle/Core/Core.h"
 
 namespace Jungle
 {
 	class JUNGLE_API Camera
+	{
+	public:
+		Camera() = default;
+		Camera(const glm::mat4& projection) : m_Projection(projection) { }
+		virtual ~Camera() = default;
+
+		const glm::mat4& GetProjection() const { return m_Projection; }
+
+	protected:
+		glm::mat4 m_Projection{ 1.0f };
+	};
+
+	class JUNGLE_API Camera2
 	{
 	public:
 		const glm::mat4& GetProjectionMatrix() const { return m_ProjectionMatrix; }
@@ -17,7 +30,7 @@ namespace Jungle
 		void SetPosition(const glm::vec3& position) { m_Position = position; RecalculateViewMatrix(); }
 
 	protected:
-		Camera(glm::mat4 projectionMatrix, glm::mat4 viewMatrix);
+		Camera2(glm::mat4 projectionMatrix, glm::mat4 viewMatrix);
 
 		virtual void RecalculateViewMatrix() = 0;
 
@@ -29,7 +42,7 @@ namespace Jungle
 		glm::vec3 m_Position = {0.0f, 0.0f, 0.0f};
 	};
 
-	class JUNGLE_API OrthographicCamera : public Camera
+	class JUNGLE_API OrthographicCamera : public Camera2
 	{
 	public:
 		OrthographicCamera(float left, float right, float bottom, float top);

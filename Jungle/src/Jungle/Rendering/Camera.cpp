@@ -6,14 +6,14 @@
 
 namespace Jungle
 {
-	Camera::Camera(glm::mat4 projectionMatrix, glm::mat4 viewMatrix)
+	Camera2::Camera2(glm::mat4 projectionMatrix, glm::mat4 viewMatrix)
 		: m_ProjectionMatrix(projectionMatrix), m_ViewMatrix(viewMatrix)
 	{
 
 	}
 
 	OrthographicCamera::OrthographicCamera(float left, float right, float bottom, float top)
-		: Camera(glm::ortho(left, right, bottom, top, -1.0f, 1.0f), glm::mat4(1.0f))
+		: Camera2(glm::ortho(left, right, bottom, top, -1.0f, 1.0f), glm::mat4(1.0f))
 	{
 		JNGL_PROFILE_FUNCTION();
 

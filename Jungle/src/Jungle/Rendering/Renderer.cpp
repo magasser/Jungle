@@ -22,7 +22,7 @@ namespace Jungle
 		Renderer2D::Shutdown();
 	}
 
-	void Renderer::BeginScene(Camera& camera)
+	void Renderer::BeginScene(Camera2& camera)
 	{
 		m_SceneData->ViewProjectionMatrix = camera.GetViewProjectionMatrix();
 	}

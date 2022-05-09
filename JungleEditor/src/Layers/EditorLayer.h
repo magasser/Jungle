@@ -20,6 +20,10 @@ namespace Jungle
 		Ref<Texture2D> m_LogoTexture, m_CheckerboardTexture;
 		Ref<Framebuffer> m_Framebuffer;
 
+		Ref<Scene> m_ActiveScene;
+		Entity m_SquareEntity;
+		Entity m_CameraEntity;
+
 		OrthographicCameraController m_CameraController;
 
 		glm::vec2 m_ViewportSize = { 0.0f, 0.0f };

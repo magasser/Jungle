@@ -32,6 +32,14 @@ namespace Jungle
 		};
 
 		m_Framebuffer = Framebuffer::Create(fbSpec);
+
+		m_ActiveScene = CreateRef<Scene>();
+
+		m_SquareEntity = m_ActiveScene->CreateEntity("Square");
+		m_CameraEntity = m_ActiveScene->CreateEntity("Camera");
+
+		m_SquareEntity.AddComponent<SpriteRendererComponent>(glm::vec4{ 0.0f, 1.0f, 0.0f, 1.0f });
+		m_CameraEntity.AddComponent<CameraComponent>();
 	}
 
 	void EditorLayer::OnDetach()
@@ -41,6 +49,18 @@ namespace Jungle
 
 	void EditorLayer::OnUpdate(Timestep timestep)
 	{
+		JNGL_PROFILE_FUNCTION();
+
+		if (FramebufferSpecification spec = m_Framebuffer->GetSpecification();
+			m_ViewportSize.x > 0.0f && m_ViewportSize.y > 0.0f &&
+			(spec.Width != m_ViewportSize.x || spec.Height != m_ViewportSize.y))
+		{
+			m_Framebuffer->Resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+			m_CameraController.OnResize(m_ViewportSize.x, m_ViewportSize.y);
+
+			m_ActiveScene->OnViewportResize(m_ViewportSize.x, m_ViewportSize.y);
+		}
+
 		if (m_ViewportFocused)
 		{
 			m_CameraController.OnUpdate(timestep);
@@ -48,30 +68,11 @@ namespace Jungle
 
 		m_Framebuffer->Bind();
 
-		RenderCommand::Clear({ 0.2f, 0.5f, 0.2f, 1 });
+		RenderCommand::Clear({ 0.2f, 0.2f, 0.2f, 1.0f });
 
 		Renderer2D::ResetStatistics();
 
-		Renderer2D::BeginScene(m_CameraController.GetCamera());
-
-		static float rotationAngle = 0.0f;
-		rotationAngle += timestep * 15.0f;
-
-		Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 1.0f, 1.0f }, { 0.7f, 0.2f, 0.3f, 1.0f });
-		Renderer2D::DrawRotatedQuad({ 0.5f, -0.5f }, { 0.5f, 0.75f }, glm::radians(-20.0f), { 0.3f, 0.2f, 0.7f, 1.0f });
-		Renderer2D::DrawQuad({ 0.0f, 0.0f, -0.2f }, { 20.0f, 20.0f }, m_CheckerboardTexture, 2.0f, { 0.7f, 1.0f, 0.8f, 1.0f });
-		Renderer2D::DrawRotatedQuad({ 0.0f, 0.0f, -0.1f }, { 5.0f, 5.0f }, glm::radians(-rotationAngle), m_CheckerboardTexture, 4.0f, { 0.7f, 0.8f, 1.0f, 1.0f });
-		Renderer2D::DrawRotatedQuad({ 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f }, glm::radians(rotationAngle), m_CheckerboardTexture, 8.0f, { 1.0f, 0.7f, 0.8f, 1.0f });
-
-		for (float y = -5.0f; y <= 5.0f; y += 0.1f)
-		{
-			for (float x = -5.0f; x <= 5.0f; x += 0.1f)
-			{
-				glm::vec4 color((x + 5.0f) / 10.0f, (y + 5.0f) / 10.0f, (x + y) / 15.0f, 0.7f);
-				Renderer2D::DrawRotatedQuad({ x, y }, { 0.07f, 0.07f }, glm::radians(rotationAngle), color);
-			}
-		}
-		Renderer2D::EndScene();
+		m_ActiveScene->OnUpdate(timestep);
 
 		m_Framebuffer->Unbind();
 	}
@@ -161,7 +162,17 @@ namespace Jungle
 		ImGui::Text("	Vertices: %d", stats.GetVertexCount());
 		ImGui::Text("	Indices: %d", stats.GetIndexCount());
 
-		ImGui::ColorEdit4("Square Color", glm::value_ptr(m_SquareColor));
+		auto& squareColor = m_SquareEntity.GetComponent<SpriteRendererComponent>().Color;
+		ImGui::ColorEdit4("Square Color", glm::value_ptr(squareColor));
+
+		{
+			auto& camera = m_CameraEntity.GetComponent<CameraComponent>().Camera;
+			float orthoSize = camera.GetOrthographicSize();
+			if (ImGui::DragFloat("Ortho Size", &orthoSize))
+			{
+				camera.SetOrthographicSize(orthoSize);
+			}
+		}
 
 		ImGui::End();
 
@@ -174,15 +185,10 @@ namespace Jungle
 
 		ImVec2 viewportSize = ImGui::GetContentRegionAvail();
 
-		if (m_ViewportSize != glm::vec2(viewportSize.x, viewportSize.y))
-		{
-			m_ViewportSize = { viewportSize.x, viewportSize.y };
-			m_Framebuffer->Resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
-			m_CameraController.Resize(m_ViewportSize.x, m_ViewportSize.y);
-		}
+		m_ViewportSize = { viewportSize.x, viewportSize.y };
 
 		uint32_t textureID = m_Framebuffer->GetColorAttachmentRendererID();
-		ImGui::Image((void*)textureID, ImVec2{ 1280.0f, 720.0f }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+		ImGui::Image((void*)textureID, ImVec2{ m_ViewportSize.x, m_ViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 
 		ImGui::End();
 		ImGui::PopStyleVar();

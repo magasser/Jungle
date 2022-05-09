@@ -13,11 +13,10 @@ namespace Jungle
 	public:
 		virtual void OnUpdate(Timestep timestep) { }
 		virtual void OnEvent(Event& e) { }
+		virtual void OnResize(float width, float height) { };
 
-		virtual Camera& GetCamera() = 0;
-		virtual const Camera& GetCamera() const = 0;
-
-		virtual void Resize(float width, float height) = 0;
+		virtual Camera2& GetCamera() = 0;
+		virtual const Camera2& GetCamera() const = 0;
 
 		void SetPosition(const glm::vec3& position) { m_Position = position; GetCamera().SetPosition(position); }
 		const glm::vec3& GetPosition() { return m_Position; }
@@ -58,11 +57,10 @@ namespace Jungle
 
 		virtual void OnUpdate(Timestep timestep);
 		virtual void OnEvent(Event& e);
+		virtual void OnResize(float width, float height) override;
 
 		virtual OrthographicCamera& GetCamera() override;
 		virtual const OrthographicCamera& GetCamera() const override;
-
-		virtual void Resize(float width, float height) override;
 
 
 	protected:

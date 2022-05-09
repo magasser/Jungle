@@ -18,7 +18,6 @@ namespace Sandbox
 
 	private:
 		Jungle::Ref<Jungle::Texture2D> m_LogoTexture, m_CheckerboardTexture;
-		Jungle::Ref<Jungle::Framebuffer> m_Framebuffer;
 
 		Jungle::OrthographicCameraController m_CameraController;
 

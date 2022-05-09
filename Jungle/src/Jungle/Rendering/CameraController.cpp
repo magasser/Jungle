@@ -23,7 +23,7 @@ namespace Jungle
 		return m_Camera;
 	}
 
-	void OrthographicCameraController::Resize(float width, float height)
+	void OrthographicCameraController::OnResize(float width, float height)
 	{
 		JNGL_PROFILE_FUNCTION();
 
@@ -99,7 +99,7 @@ namespace Jungle
 	{
 		JNGL_PROFILE_FUNCTION();
 
-		Resize((float)e.GetWidth(), (float)e.GetHeight());
+		OnResize((float)e.GetWidth(), (float)e.GetHeight());
 		CalculateView();
 
 		return false;

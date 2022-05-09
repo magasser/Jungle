@@ -19,6 +19,7 @@ IncludeDir["spdlog"] =	"Jungle/vendor/spdlog/include"
 IncludeDir["GLFW"] =	"Jungle/vendor/GLFW/include"
 IncludeDir["GLAD"] =	"Jungle/vendor/GLAD/include"
 IncludeDir["GLM"] =		"Jungle/vendor/GLM"
+IncludeDir["EnTT"] =	"Jungle/vendor/EnTT"
 IncludeDir["ImGui"] =	"Jungle/vendor/ImGui"
 IncludeDir["stb"] =		"Jungle/vendor/stb"
 
@@ -51,6 +52,8 @@ project "Jungle"
 
 		"%{prj.name}/vendor/GLM/glm/**.hpp",
 		"%{prj.name}/vendor/GLM/glm/**.inl",
+
+		"%{prj.name}/vendor/EnTT/entt/**.hpp",
 	}
 
 	includedirs
@@ -60,6 +63,7 @@ project "Jungle"
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.GLAD}",
 		"%{IncludeDir.GLM}",
+		"%{IncludeDir.EnTT}",
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.stb}"
 	}
@@ -145,6 +149,7 @@ project "Sandbox"
 		"Jungle/src",
 		"%{IncludeDir.spdlog}",
 		"%{IncludeDir.GLM}",
+		"%{IncludeDir.EnTT}",
 		"%{IncludeDir.ImGui}"
 	}
 
@@ -203,6 +208,7 @@ project "JungleEditor"
 		"Jungle/src",
 		"%{IncludeDir.spdlog}",
 		"%{IncludeDir.GLM}",
+		"%{IncludeDir.EnTT}",
 		"%{IncludeDir.ImGui}"
 	}
 
